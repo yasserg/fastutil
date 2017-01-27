@@ -421,6 +421,7 @@ fi)\
 "#define ITERATORS ${TYPE_CAP2[$k]}Iterators\n"\
 "#define BIG_LIST_ITERATORS ${TYPE_CAP2[$k]}BigListIterators\n"\
 "#define COMPARATORS ${TYPE_CAP2[$k]}Comparators\n"\
+"#define COLLECTORS ${TYPE_CAP2[$k]}Collectors\n"\
 \
 \
 "/* Static containers (values) */\n"\

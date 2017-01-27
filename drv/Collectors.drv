@@ -1,0 +1,48 @@
+package PACKAGE;
+
+import java.util.stream.Collector;
+
+public final class COLLECTORS {
+
+    private COLLECTORS() { }
+
+    public static Collector<KEY_GENERIC_CLASS, ARRAY_LIST, LIST> toList() {
+        return Collector.of(
+            ARRAY_LIST::new,
+            ARRAY_LIST::add,
+            (b1, b2) -> {
+                b1.addAll(b2);
+                return b1;
+            },
+            s -> s);
+    }
+
+    public static Collector<KEY_GENERIC_CLASS, OPEN_HASH_SET, SET> toSet() {
+        return Collector.of(
+            OPEN_HASH_SET::new,
+            OPEN_HASH_SET::add,
+            (b1, b2) -> {
+                b1.addAll(b2);
+                return b1;
+            },
+            s -> s);
+    }
+
+    public static Collector<KEY_GENERIC_CLASS, IMMUTABLE_LIST.Builder, IMMUTABLE_LIST> toImmutableList() {
+        return Collector.of(
+            IMMUTABLE_LIST::builder,
+            IMMUTABLE_LIST.Builder::add,
+            IMMUTABLE_LIST.Builder::combine,
+            IMMUTABLE_LIST.Builder::build);
+    }
+
+    public static Collector<KEY_GENERIC_CLASS, IMMUTABLE_SET.Builder, IMMUTABLE_SET> toImmutableSet() {
+        return Collector.of(
+            IMMUTABLE_SET::builder,
+            IMMUTABLE_SET.Builder::add,
+            IMMUTABLE_SET.Builder::combine,
+            IMMUTABLE_SET.Builder::build);
+    }
+
+}
+

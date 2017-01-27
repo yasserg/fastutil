@@ -116,6 +116,13 @@ final class IMMUTABLES {
             super.addAll(elements);
             return this;
         }
+
+        ArrayBasedBuilder combine(ArrayBasedBuilder other) {
+            ensureCapacity(size + other.size);
+            System.arraycopy(other.elements, 0, elements, size, other.size);
+            size += other.size;
+            return this;
+        }
     }
 
 #ifdef JDK_PRIMITIVE_SPLITERATOR

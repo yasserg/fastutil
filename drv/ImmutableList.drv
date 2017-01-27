@@ -182,6 +182,12 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
             return this;
         }
 
+        @Override
+        Builder combine(IMMUTABLES.ArrayBasedBuilder other) {
+            super.combine(other);
+            return this;
+        }
+
         public int size() {
             return size;
         }

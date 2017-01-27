@@ -127,6 +127,12 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
             return this;
         }
 
+        @Override
+        Builder combine(IMMUTABLES.ArrayBasedBuilder other) {
+            super.combine(other);
+            return this;
+        }
+
         public IMMUTABLE_SET build() {
             IMMUTABLE_SET result = construct(size, elements);
             // construct has the side effect of de-duping contents, so we

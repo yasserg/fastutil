@@ -554,6 +554,11 @@ $(COMPARATORS_STATIC): drv/Comparators.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(COMPARATORS_STATIC)
 
+COLLECTORS := $(foreach k,$(TYPE_NOBOOL_NOOBJ), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Collectors.c)
+$(COLLECTORS): drv/Collectors.drv; ./gencsource.sh $< $@ >$@
+
+CSOURCES += $(COLLECTORS)
+
 #
 # Fragmented stuff
 #
