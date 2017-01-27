@@ -20,7 +20,7 @@ APIURL=http://java.sun.com/j2se/5.0/docs/api # External URLs in the docs will po
 BYTE_NOSMALL=$(if $(SMALL_TYPES),,Byte)
 
 #  The capitalized types used to build class and method names; boolean and object types are not listed.
-TYPE_NOBOOL_NOOBJ= $(if $(SMALL_TYPES),Byte Short Char Float,) Int Long Double
+TYPE_NOBOOL_NOOBJ= $(if $(SMALL_TYPES),Byte Short Char,) Int Long
 
 #  The capitalized types used to build class and method names; boolean and reference are not listed.
 TYPE_NOBOOL_NOREF=$(TYPE_NOBOOL_NOOBJ) Object
@@ -41,8 +41,7 @@ TYPE_NOBOOL=$(TYPE_NOBOOL_NOREF) Reference
 TYPE=$(TYPE_NOREF) Reference
 
 #  The capitalized types used to build class and method names; only types for which big structures are built are listed.
-TYPE_BIG=Int Long $(if $(SMALL_TYPES),Float,) Double Object Reference
-
+TYPE_BIG=Int Long Object Reference
 
 # These variables are used as an associative array (using computed names).
 PACKAGE_Boolean = booleans

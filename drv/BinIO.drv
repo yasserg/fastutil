@@ -26,12 +26,10 @@ import java.util.*;
 import it.unimi.dsi.fastutil.bytes.*;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.*;
-import it.unimi.dsi.fastutil.doubles.*;
 #if SMALL_TYPES
 import it.unimi.dsi.fastutil.booleans.*;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.shorts.*;
-import it.unimi.dsi.fastutil.floats.*;
 #endif
 
 /** Provides static methods to perform easily binary I/O.
@@ -159,8 +157,6 @@ public class BinIO {
 #undef KEY_CLASS_Integer
 #include "src/it/unimi/dsi/fastutil/io/LongBinIOFragment.h"
 #undef KEY_CLASS_Long
-#include "src/it/unimi/dsi/fastutil/io/DoubleBinIOFragment.h"
-#undef KEY_CLASS_Double
 #if SMALL_TYPES
 #include "src/it/unimi/dsi/fastutil/io/BooleanBinIOFragment.h"
 #undef KEY_CLASS_Boolean
@@ -168,8 +164,6 @@ public class BinIO {
 #undef KEY_CLASS_Short
 #include "src/it/unimi/dsi/fastutil/io/CharBinIOFragment.h"
 #undef KEY_CLASS_Character
-#include "src/it/unimi/dsi/fastutil/io/FloatBinIOFragment.h"
-#undef KEY_CLASS_Float
 #endif
 
 }
