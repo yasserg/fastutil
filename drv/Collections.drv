@@ -17,6 +17,7 @@
 
 package PACKAGE;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrays;
@@ -370,6 +371,40 @@ public final class COLLECTIONS {
 		public KEY_ITERATOR KEY_GENERIC iterator() { return iterable.iterator(); }
 	}
 
+
+#if KEYS_PRIMITIVE && defined JDK_PRIMITIVE_ITERATOR
+	/**
+	 * Sorts the specified list in ascending order.
+	 *
+	 * @param l the list object to sort.
+	 */
+    public static void sort(LIST l) {
+        KEY_TYPE[] arr = l.TO_KEY_ARRAY();
+        Arrays.sort(arr);
+        KEY_LIST_ITERATOR itr = l.listIterator();
+        for (KEY_TYPE e : arr) {
+            itr.NEXT_KEY();
+            itr.set(e);
+        }
+    }
+
+	/**
+	 * Returns the minimum element in given collection. The given collection must be non-empty.
+	 *
+	 * @param c the collection to return minimum element for.
+	 */
+    public static KEY_TYPE min(COLLECTION c) {
+        KEY_ITERATOR itr = c.iterator();
+        KEY_TYPE candidate = itr.NEXT_KEY();
+        while (itr.hasNext()) {
+            KEY_TYPE e = itr.NEXT_KEY();
+            if (e < candidate) {
+                candidate = e;
+            }
+        }
+        return candidate;
+    }
+#endif
 
 	/** Returns an unmodifiable collection backed by the specified iterable.
 	 *

@@ -18,6 +18,7 @@
 package PACKAGE;
 
 import java.util.AbstractCollection;
+import java.util.Collection;
 
 /** An abstract class providing basic methods for collections implementing a type-specific interface.
  *
@@ -159,6 +160,42 @@ public abstract class ABSTRACT_COLLECTION KEY_GENERIC extends AbstractCollection
 				retVal = true;
 			}
 		return retVal;
+	}
+
+	@Override
+	public boolean addAll(final Collection<? extends KEY_GENERIC_CLASS> c) {
+		if (c instanceof COLLECTION){
+			return addAll((COLLECTION) c);
+		} else {
+			return super.addAll(c);
+		}
+	}
+
+	@Override
+	public boolean containsAll(final Collection<?> c) {
+		if (c instanceof COLLECTION) {
+			return containsAll((COLLECTION) c);
+		} else {
+			return super.containsAll(c);
+		}
+	}
+
+	@Override
+	public boolean removeAll(final Collection<?> c) {
+		if (c instanceof COLLECTION) {
+			return removeAll((COLLECTION) c);
+		} else {
+			return super.removeAll(c);
+		}
+	}
+
+	@Override
+	public boolean retainAll(final Collection<?> c) {
+		if (c instanceof COLLECTION) {
+			return retainAll((COLLECTION) c);
+		} else {
+			return super.retainAll(c);
+		}
 	}
 #endif
 
