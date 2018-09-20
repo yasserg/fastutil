@@ -58,6 +58,7 @@ public interface KEY_ITERATOR KEY_GENERIC extends Iterator<KEY_GENERIC_CLASS> {
 	@Deprecated
 	@Override
 	default KEY_CLASS next() {
+		if (ASSERTS_VALUE) assert false : "Use primitive next..() method instead.";
 		return KEY_CLASS.valueOf(NEXT_KEY());
 	}
 

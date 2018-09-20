@@ -810,9 +810,11 @@ public class OPEN_HASH_BIG_SET KEY_GENERIC extends ABSTRACT_SET KEY_GENERIC impl
 				throw new AssertionError("Hash table has key " + BIG_ARRAYS.get(key, n) + " marked as occupied, but the key does not belong to the table");
 
 #if KEYS_PRIMITIVE
-		java.util.HashSet<KEY_GENERIC_CLASS> s = new java.util.HashSet<KEY_GENERIC_CLASS> ();
+		java.util.Set<KEY_GENERIC_CLASS> s = new java.util.HashSet<KEY_GENERIC_CLASS> ();
+#elif KEY_CLASS_Object
+		java.util.Set<Object> s = new java.util.HashSet<Object>();
 #else
-		java.util.HashSet<Object> s = new java.util.HashSet<Object>();
+		java.util.Set<Object> s = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<Object, Boolean>());
 #endif
 
 		for(long i = size(); i-- != 0;)

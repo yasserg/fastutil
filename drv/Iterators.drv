@@ -877,7 +877,10 @@ public final class ITERATORS {
 
 		@Deprecated
 		@Override
-		public KEY_GENERIC_CLASS next() { return KEY_GENERIC_CLASS.valueOf(iterator.nextByte()); }
+		public KEY_GENERIC_CLASS next() {
+			if (ASSERTS_VALUE) assert false : "Use the primitive next..() method instead.";
+			return KEY_GENERIC_CLASS.valueOf(iterator.nextByte());
+		}
 
 		@Override
 		public KEY_TYPE NEXT_KEY() { return iterator.nextByte(); }
@@ -914,7 +917,10 @@ public final class ITERATORS {
 
 		@Deprecated
 		@Override
-		public KEY_GENERIC_CLASS next() { return KEY_GENERIC_CLASS.valueOf(iterator.nextShort()); }
+		public KEY_GENERIC_CLASS next() {
+			if (ASSERTS_VALUE) assert false : "Use the primitive next..() method instead.";
+			return KEY_GENERIC_CLASS.valueOf(iterator.nextShort());
+		}
 
 		@Override
 		public KEY_TYPE NEXT_KEY() { return iterator.nextShort(); }
@@ -952,7 +958,10 @@ public final class ITERATORS {
 
 		@Deprecated
 		@Override
-		public KEY_GENERIC_CLASS next() { return KEY_GENERIC_CLASS.valueOf(iterator.nextInt()); }
+		public KEY_GENERIC_CLASS next() {
+			if (ASSERTS_VALUE) assert false : "Use the primitive next..() method instead.";
+			return KEY_GENERIC_CLASS.valueOf(iterator.nextInt());
+		}
 
 		@Override
 		public KEY_TYPE NEXT_KEY() { return iterator.nextInt(); }
@@ -991,7 +1000,10 @@ public final class ITERATORS {
 
 		@Deprecated
 		@Override
-		public KEY_GENERIC_CLASS next() { return KEY_GENERIC_CLASS.valueOf(iterator.nextFloat()); }
+		public KEY_GENERIC_CLASS next() {
+			if (ASSERTS_VALUE) assert false : "Use the primitive next..() method instead.";
+			return KEY_GENERIC_CLASS.valueOf(iterator.nextFloat());
+		}
 
 		@Override
 		public KEY_TYPE NEXT_KEY() { return iterator.nextFloat(); }
