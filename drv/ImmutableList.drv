@@ -52,7 +52,17 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
             case 0:
                 return of();
             case 1:
-                return new SingletonImmutableList(collection.iterator().next());
+#if KEYS_PRIMITIVE
+                KEY_TYPE singleValue;
+                if (collection instanceof ABSTRACT_COLLECTION) {
+                    singleValue = ((ABSTRACT_COLLECTION) collection).iterator().NEXT_KEY();
+                } else {
+                    singleValue = collection.iterator().next();
+                }
+#else
+                KEY_TYPE singleValue = collection.iterator().next();
+#endif
+                return new SingletonImmutableList(singleValue);
             default:
                 return new RegularImmutableList(collection);
         }
@@ -94,6 +104,16 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
 
         private RegularImmutableList(Collection<KEY_GENERIC_CLASS> collection) {
             data = new KEY_TYPE[collection.size()];
+#if KEYS_PRIMITIVE
+            if (collection instanceof ABSTRACT_COLLECTION) {
+                KEY_ITERATOR iterator = ((ABSTRACT_COLLECTION) collection).iterator();
+                int pos = 0;
+                while (iterator.hasNext()) {
+                    data[pos++] = iterator.NEXT_KEY();
+                }
+                return;
+            }
+#endif
             Iterator<KEY_GENERIC_CLASS> iterator = collection.iterator();
             int pos = 0;
             while (iterator.hasNext()) {
