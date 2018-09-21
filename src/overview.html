@@ -117,7 +117,7 @@
 
     <p><strong>Warning</strong>: automatic boxing and unboxing can lead you
     to choose the wrong method when using <code>fastutil</code>. It is also extremely inefficient.
-    We suggest that your programming environment is set so to mark boxin/unboxing as
+    We suggest that your programming environment is set so to mark boxing/unboxing as
     a warning, or even better, as an error.
 
     <p>Of course, the main point of type-specific data structures is that the
@@ -195,7 +195,7 @@
     <p>For a number of data structures that were not available in the
     <a href="http://java.sun.com/j2se/1.5/docs/guide/collections/">Java&trade; Collections Framework</a>
     when <code>fastutil</code> was created, an object-based version is
-    contained {@link it.unimi.dsi.fastutil}, and in that case the prefix
+    contained in {@link it.unimi.dsi.fastutil}, and in that case the prefix
     <code>Object</code> is not used (see, e.g., {@link it.unimi.dsi.fastutil.PriorityQueue}).
 
     <p>Since there are eight primitive types in Java, and we support
@@ -224,7 +224,7 @@
     implementations. To get more information, you can look at a specific
     implementation in {@link
     it.unimi.dsi.fastutil} or, for instance, {@link it.unimi.dsi.fastutil.ints}. Note that a few existing
-    abstract classes have been deprecated and are not listed here (they are not longer necessary due to
+    abstract classes have been deprecated and are not listed here (they are no longer necessary due to
     default methods in the corresponding interfaces).
 
     <div align=center>
@@ -907,16 +907,16 @@ i = TextIO.asIntIterator("foo.txt"); // This iterator will parse the file and re
     </pre>
     <p>You can sort arrays using type-specific comparators specified by lambda expressions (no boxing/unboxing here):
     <pre>
-IntArrays.quickSort(a, (x, y) -> y - x); // Sorts in reverse order
+IntArrays.quickSort(a, (x, y) -&gt; y - x); // Sorts in reverse order
     </pre>
     <p>You can also easily specify complex generic sorting, like sorting indirectly on {@code a} while swapping elements in {@code a} and {@code b} in parallel:
     <pre>
-Arrays.quickSort(0, a.length, (i, j) -> Integer.compare(a[i], a[j]), (i, j) -> { IntArrays.swap(a, i, j); IntArrays.swap(b, i, j); }));
+Arrays.quickSort(0, a.length, (i, j) -&gt; Integer.compare(a[i], a[j]), (i, j) -&gt; { IntArrays.swap(a, i, j); IntArrays.swap(b, i, j); }));
     </pre>
     <p>If you have several cores, you can do it in parallel:
     <pre>
-IntArrays.parallelQuickSort(a, (x, y) -> y - x); // Sorts in reverse order
-Arrays.parallelQuickSort(0, a.length, (i, j) -> Integer.compare(a[i], a[j]), (i, j) -> { IntArrays.swap(a, i, j); IntArrays.swap(b, i, j); }));
+IntArrays.parallelQuickSort(a, (x, y) -&gt; y - x); // Sorts in reverse order
+Arrays.parallelQuickSort(0, a.length, (i, j) -&gt; Integer.compare(a[i], a[j]), (i, j) -&gt; { IntArrays.swap(a, i, j); IntArrays.swap(b, i, j); }));
     </pre>
 
     <p>Some maps provide a <em>fast iterator</em> on their entry set: such iterators are allowed to reuse the {@link java.util.Map.Entry} instance
@@ -929,7 +929,7 @@ for (Int2IntMap.Entry e : Int2IntMaps.fastIterable(m)) {
     // do things with e.getIntKey() and e.getIntValue();
 }
     </pre>
-    <p>The code above will not generate an object per enumerated item, as <code>for(Entry&lt;Integer,Integer&gt; e: m.entrySet())<code>
-    (or even <code>for(Int2IntMap.Entry e: m.int2IntKeySet())<code>) would do.
+    <p>The code above will not generate an object per enumerated item, as <code>for(Entry&lt;Integer,Integer&gt; e: m.entrySet())</code>
+    (or even <code>for(Int2IntMap.Entry e: m.int2IntKeySet())</code>) would do.
   </body>
 </html>

@@ -56,7 +56,6 @@
 		<jar jarfile="${maven-sources-jar}">
 			<fileset dir="." includes="README.md,CHANGES,LICENSE-2.0,build.xml,ivy.xml,pom.xml,fastutil.bnd,build.properties,makefile,${drv}/*.drv,gencsource.sh"/>
 			<fileset dir="src" includes="it/unimi/dsi/fastutil/**/*.java,it/unimi/dsi/fastutil/**/*.html"/>
-			<fileset dir="test" includes="**/*.java"/>
 		</jar>
 	</target>
 
@@ -156,6 +155,9 @@
 	<target name="jar" depends="compile">
 		<jar jarfile="fastutil-${version}.jar">
 			<fileset dir="${build}" excludes="it/unimi/dsi/fastutil/*IndirectDoublePriorityQueue*"/>
+			<manifest>
+				<attribute name="Automatic-Module-Name" value="it.unimi.dsi.fastutil"/>
+			</manifest>
 	 </jar>
 	</target>
 
