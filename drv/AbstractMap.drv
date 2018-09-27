@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 #endif
 import it.unimi.dsi.fastutil.objects.AbstractObjectSet;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -180,6 +181,20 @@ public abstract class ABSTRACT_MAP KEY_VALUE_GENERIC extends ABSTRACT_FUNCTION K
 			return map.containsKey(k) && VALUE_EQUALS(map.GET_VALUE(k), VALUE_OBJ2TYPE(value));
 		}
 
+
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			if (c instanceof FastEntrySet) {
+				Iterator<MAP.Entry KEY_VALUE_GENERIC> itr = ((FastEntrySet KEY_VALUE_GENERIC) c).fastIterator();
+				while (itr.hasNext()) {
+					if (!contains(itr.next())) return false;
+				}
+				return true;
+			} else {
+				return super.containsAll(c);
+			}
+		}
+
 		SUPPRESS_WARNINGS_KEY_VALUE_UNCHECKED
 		@Override
 		public boolean remove(final Object o) {
@@ -330,6 +345,8 @@ public abstract class ABSTRACT_MAP KEY_VALUE_GENERIC extends ABSTRACT_FUNCTION K
 
 		final Map<?,?> m = (Map<?,?>)o;
 		if (m.size() != size()) return false;
+		// Handle multimaps: multimap may contain fewer keys but same number of entries.
+		if (m.keySet().size() != keySet().size()) return false;
 		return ENTRYSET().containsAll(m.entrySet());
 	}
 

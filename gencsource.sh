@@ -284,20 +284,24 @@ fi)\
 "#define KEY_VALUE_GENERIC <K,V>\n"\
 "#define KEY_VALUE_GENERIC_DIAMOND <>\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC <? extends K, ? extends V>\n"\
+"#define KEY_VALUE_AS_OBJECT <Object, Object>\n"\
 "#else\n"\
 "#define KEY_VALUE_GENERIC <K>\n"\
 "#define KEY_VALUE_GENERIC_DIAMOND <>\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC <? extends K>\n"\
+"#define KEY_VALUE_AS_OBJECT <Object>\n"\
 "#endif\n"\
 "#else\n"\
 "#if VALUES_REFERENCE\n"\
 "#define KEY_VALUE_GENERIC <V>\n"\
 "#define KEY_VALUE_GENERIC_DIAMOND <>\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC <? extends V>\n"\
+"#define KEY_VALUE_AS_OBJECT <Object>\n"\
 "#else\n"\
 "#define KEY_VALUE_GENERIC\n"\
 "#define KEY_VALUE_GENERIC_DIAMOND\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC\n"\
+"#define KEY_VALUE_AS_OBJECT\n"\
 "#endif\n"\
 "#endif\n"\
 \
@@ -330,6 +334,7 @@ fi)\
 "#define STD_SORTED_SET ${TYPE_STD[$k]}SortedSet\n"\
 "#define FUNCTION ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}Function\n"\
 "#define MAP ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}Map\n"\
+"#define IMMUTABLE_MAP Immutable${TYPE_CAP[$k]}2${TYPE_CAP[$v]}Map\n"\
 "#define SORTED_MAP ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}SortedMap\n"\
 "#if KEYS_REFERENCE\n"\
 "#define STD_SORTED_MAP SortedMap\n"\
@@ -347,6 +352,7 @@ fi)\
 "#define INDIRECT_DOUBLE_PRIORITY_QUEUE ${TYPE_STD[$k]}IndirectDoublePriorityQueue\n"\
 "#define KEY_CONSUMER ${TYPE_STD[$k]}Consumer\n"\
 "#define KEY_ITERATOR ${TYPE_CAP2[$k]}Iterator\n"\
+"#define KEY_ITERATORS ${TYPE_CAP2[$k]}Iterators\n"\
 "#define KEY_ITERABLE ${TYPE_CAP2[$k]}Iterable\n"\
 "#define KEY_BIDI_ITERATOR ${TYPE_CAP2[$k]}BidirectionalIterator\n"\
 "#define KEY_BIDI_ITERABLE ${TYPE_CAP2[$k]}BidirectionalIterable\n"\
@@ -363,6 +369,7 @@ fi)\
 "#define VALUE_ARRAY_SET ${TYPE_CAP[$v]}ArraySet\n"\
 "#define VALUE_CONSUMER ${TYPE_STD[$v]}Consumer\n"\
 "#define VALUE_ITERATOR ${TYPE_CAP2[$v]}Iterator\n"\
+"#define VALUE_ITERATORS ${TYPE_CAP2[$v]}Iterators\n"\
 "#define VALUE_LIST_ITERATOR ${TYPE_CAP2[$v]}ListIterator\n"\
 \
 \

@@ -434,4 +434,23 @@ public class Arrays {
 		if ((s = b - a) > 1) quickSort(from, from + s, comp, swapper);
 		if ((s = d - c) > 1) quickSort(to - s, to, comp, swapper);
 	}
+
+	/**
+	 * Returns new capacity to use for expanding an array with {@code oldCapacity} to at least {@code minCapacity}.
+	 */
+	public static int expandedCapacity(int oldCapacity, int minCapacity) {
+		assert minCapacity > 0;
+
+		int newCapacity = oldCapacity + (oldCapacity >> 1) + 1;
+		if (newCapacity < minCapacity) {
+			newCapacity = Integer.highestOneBit(minCapacity - 1) << 1;
+		}
+
+		if (newCapacity < 0) {
+			newCapacity = Integer.MAX_VALUE;
+		}
+
+		return newCapacity;
+	}
+
 }

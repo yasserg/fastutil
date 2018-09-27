@@ -67,6 +67,9 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
         if (elements instanceof IMMUTABLE_SET) {
             return (IMMUTABLE_SET) elements;
         }
+        if (elements instanceof COLLECTION) {
+            return construct(elements.size(), ((COLLECTION) elements).TO_KEY_ARRAY());
+        }
         return construct(elements.size(), new ARRAY_LIST(elements).TO_KEY_ARRAY());
     }
 

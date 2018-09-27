@@ -232,4 +232,17 @@ public class HashCommon {
 	public static long bigArraySize(final long expected, final float f) {
 		return nextPowerOfTwo((long)Math.ceil(expected / f));
 	}
+
+	/**
+	 * Returns an array size suitable for the backing array of a hash table
+	 * that uses open addressing with linear probing in its implementation.
+	 * The returned size is the smallest power of two that can hold
+	 * {@code mapSize} elements with the desired load factor.
+	 */
+	public static int chooseTableSize(int mapSize) {
+		int tableSize = arraySize(mapSize, Hash.DEFAULT_LOAD_FACTOR);
+		assert tableSize > mapSize;
+		return tableSize;
+	}
+
 }

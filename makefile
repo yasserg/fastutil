@@ -186,6 +186,11 @@ $(IMMUTABLE_SET): drv/ImmutableSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(IMMUTABLE_SET)
 
+IMMUTABLE_MAP := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Immutable$(k)2$(v)Map.c))
+$(IMMUTABLE_MAP): drv/ImmutableMap.drv; ./gencsource.sh $< $@ >$@
+
+CSOURCES += $(IMMUTABLE_MAP)
+
 STACKS := $(foreach k,$(TYPE_NOOBJ), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Stack.c)
 $(STACKS): drv/Stack.drv; ./gencsource.sh $< $@ >$@
 
