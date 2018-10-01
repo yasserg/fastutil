@@ -1,0 +1,990 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package PACKAGE;
+
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.HashCommon;
+import it.unimi.dsi.fastutil.objects.AbstractObjectSet;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.ObjectIterators;
+
+import VALUE_PACKAGE.VALUE_COLLECTION;
+import VALUE_PACKAGE.VALUE_ABSTRACT_COLLECTION;
+import VALUE_PACKAGE.VALUE_ITERATORS;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
+
+#if VALUES_PRIMITIVE
+import VALUE_PACKAGE.VALUE_ITERATOR;
+#endif
+
+#if VALUE_CLASS_Boolean
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+#endif
+
+
+/**
+ * A type-specific immutable {@link java.util.Map}.
+ * <p/>
+ * All operations that would modify the content of the set throw
+ * {@link UnsupportedOperationException}.
+ * <p/>
+ * The implementation here is open addressing and is very similar to fastutil's map and to Guava's
+ * ImmutableSet (see https://github.com/google/guava). Some of the helper
+ * methods are adapted from Guava implementation which is licensed under
+ * Apache 2.0.
+ */
+public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_GENERIC {
+
+    /**
+     * Returns the empty immutable map.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC of() {
+        return (IMMUTABLE_MAP KEY_VALUE_GENERIC) RegularImmutableMap.EMPTY;
+    }
+
+    /**
+     * Returns an immutable map containing single entry.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC of(KEY_GENERIC_TYPE key, VALUE_GENERIC_TYPE value) {
+        return new SingletonImmutableMap KEY_VALUE_GENERIC_DIAMOND(key, value);
+    }
+
+    /**
+     * Specialization of {@link #of(KEY_GENERIC_TYPE[], VALUE_GENERIC_TYPE[])}.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC of(KEY_GENERIC_TYPE key1, VALUE_GENERIC_TYPE value1, KEY_GENERIC_TYPE key2, VALUE_GENERIC_TYPE value2) {
+        return of(KEY_GENERIC_ARRAY_CAST new KEY_TYPE[]{key1, key2}, VALUE_GENERIC_ARRAY_CAST new VALUE_TYPE[]{value1, value2});
+    }
+
+    /**
+     * Specialization of {@link #of(KEY_GENERIC_TYPE[], VALUE_GENERIC_TYPE[])}.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC of(KEY_GENERIC_TYPE key1, VALUE_GENERIC_TYPE value1, KEY_GENERIC_TYPE key2, VALUE_GENERIC_TYPE value2, KEY_GENERIC_TYPE key3, VALUE_GENERIC_TYPE value3) {
+        return of(KEY_GENERIC_ARRAY_CAST new KEY_TYPE[]{key1, key2, key3}, VALUE_GENERIC_ARRAY_CAST new VALUE_TYPE[]{value1, value2, value3});
+    }
+
+    /**
+     * Returns an immutable map containing the given entries.
+     * Duplicate keys are not allowed and will cause this method to throw an exception.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC of(KEY_GENERIC_TYPE[] keys, VALUE_GENERIC_TYPE[] values) {
+        return construct(keys.length,  keys,  values);
+    }
+
+    /**
+     * Returns an immutable map containing all the entries in {@code entryCollection}.
+     * Duplicate keys are not allowed and will cause this method to throw an exception.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC of(Collection<? extends Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entryCollection) {
+        KEY_GENERIC_TYPE[] keys = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[entryCollection.size()];
+        VALUE_GENERIC_TYPE[] values = VALUE_GENERIC_ARRAY_CAST new VALUE_TYPE[entryCollection.size()];
+
+        if (entryCollection instanceof FastEntrySet) {
+            MAP.FastEntrySet KEY_VALUE_GENERIC entrySet = (MAP.FastEntrySet KEY_VALUE_GENERIC) entryCollection;
+            ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> itr = entrySet.fastIterator();
+            int index = 0;
+            while (itr.hasNext()) {
+                MAP.Entry KEY_VALUE_GENERIC entry = itr.next();
+                keys[index] = entry.ENTRY_GET_KEY();
+                values[index] = entry.ENTRY_GET_VALUE();
+                index++;
+            }
+            return construct(index, keys, values);
+        }
+        int index = 0;
+        for (Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS> entry : entryCollection) {
+            if (entry instanceof MAP.Entry) {
+                MAP.Entry KEY_VALUE_GENERIC kvEntry = (MAP.Entry KEY_VALUE_GENERIC) entry;
+                keys[index] = kvEntry.ENTRY_GET_KEY();
+                values[index] = kvEntry.ENTRY_GET_VALUE();
+            } else {
+                keys[index] = entry.getKey();
+                values[index] = entry.getValue();
+            }
+            index++;
+        }
+        return construct(index, keys, values);
+    }
+
+    /**
+     * Returns an immutable map that's a copy of {@code mapToCopy}.
+     */
+    public static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC copyOf(Map<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS> mapToCopy) {
+        if (mapToCopy instanceof IMMUTABLE_MAP) {
+            return (IMMUTABLE_MAP KEY_VALUE_GENERIC) mapToCopy;
+        }
+        return of(mapToCopy.entrySet());
+    }
+
+    /** Returns a new Builder. */
+    public static KEY_VALUE_GENERIC Builder KEY_VALUE_GENERIC builder() {
+        return new Builder KEY_VALUE_GENERIC_DIAMOND ();
+    }
+
+    /**
+     * Returns a new Builder which is initialized with the provided initial
+     * capacity. Duplicate keys are not allowed and will cause {@link Builder#build()}
+     * to throw an exception.
+     */
+    public static KEY_VALUE_GENERIC Builder KEY_VALUE_GENERIC builder(int initialCapacity) {
+        return new Builder KEY_VALUE_GENERIC_DIAMOND (initialCapacity);
+    }
+
+    public static class Builder KEY_VALUE_GENERIC {
+        private static final int DEFAULT_INITIAL_CAPACITY = 4;
+
+        private KEY_GENERIC_TYPE[] keys;
+        private VALUE_GENERIC_TYPE[] values;
+        int size = 0;
+
+        public Builder(int initialCapacity) {
+            keys = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[initialCapacity];
+            values = VALUE_GENERIC_ARRAY_CAST new VALUE_TYPE[initialCapacity];
+        }
+
+        public Builder() {
+            this(DEFAULT_INITIAL_CAPACITY);
+        }
+
+        private void ensureCapacity(int minCapacity) {
+            if (minCapacity > keys.length) {
+                int newCapacity = it.unimi.dsi.fastutil.Arrays.expandedCapacity(keys.length, minCapacity);
+                keys = Arrays.copyOf(keys, newCapacity);
+                values = Arrays.copyOf(values, newCapacity);
+            }
+        }
+
+        public Builder KEY_VALUE_GENERIC put(KEY_GENERIC_TYPE key, VALUE_GENERIC_TYPE value) {
+            ensureCapacity(size + 1);
+            keys[size] = key;
+            values[size] = value;
+            size++;
+            return this;
+        }
+
+        public Builder KEY_VALUE_GENERIC put(Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS> e) {
+            if (e instanceof MAP.Entry) {
+                MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry KEY_VALUE_GENERIC) e;
+                return put(entry.ENTRY_GET_KEY(), entry.ENTRY_GET_VALUE());
+            } else {
+                return put(e.getKey(), e.getValue());
+            }
+        }
+
+        public Builder KEY_VALUE_GENERIC putAll(Map<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS> map) {
+            ensureCapacity(size + map.size());
+            Set<? extends Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS>> entrySet = map.entrySet();
+            if (entrySet instanceof FastEntrySet) {
+                MAP.FastEntrySet KEY_VALUE_GENERIC fastEntrySet = (MAP.FastEntrySet KEY_VALUE_GENERIC) entrySet;
+                ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> itr = fastEntrySet.fastIterator();
+                while (itr.hasNext()) {
+                    put(itr.next());
+                }
+            } else {
+                for (Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS> entry : entrySet) {
+                    put(entry);
+                }
+            }
+            return this;
+        }
+
+        public Builder KEY_VALUE_GENERIC putAll(Iterable<Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS>> entries) {
+            for (Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS> entry : entries) {
+                put(entry);
+            }
+            return this;
+        }
+
+        public IMMUTABLE_MAP KEY_VALUE_GENERIC build() {
+            IMMUTABLE_MAP KEY_VALUE_GENERIC result = construct(size, keys, values);
+            // Since duplicates are not allowed, size of map must be same as this size.
+            if (ASSERTS_VALUE) assert result.size() == size;
+            return result;
+        }
+    }
+
+    /**
+     * Constructs an immutable map from the first {@code n} elements of the
+     * specified arrays.
+     */
+    private static KEY_VALUE_GENERIC IMMUTABLE_MAP KEY_VALUE_GENERIC construct(int n, KEY_GENERIC_TYPE[] keys, VALUE_GENERIC_TYPE[] values) {
+        if (keys.length != values.length) {
+            throw new IllegalArgumentException();
+        }
+        switch (n) {
+            case 0:
+                return of();
+            case 1:
+                return of(keys[0], values[0]);
+            default:
+                // continue below to handle the general case
+        }
+
+        int tableSize = HashCommon.chooseTableSize(nonNullCount(keys, n));
+        KEY_GENERIC_TYPE[] keyTable = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[tableSize];
+        VALUE_GENERIC_TYPE[] valueTable = VALUE_GENERIC_ARRAY_CAST new VALUE_TYPE[tableSize];
+        int mask = tableSize - 1;
+        int hashCode = 0;
+        boolean hasNull = false;
+        VALUE_GENERIC_TYPE valueForNullKey = VALUE_NULL;
+        for (int i = 0; i < n; i++) {
+            KEY_GENERIC_TYPE key = keys[i];
+            hashCode += KEY2JAVAHASH(key) ^ VALUE2JAVAHASH(values[i]);
+            if (KEY_IS_NULL(key)) {
+                if (hasNull) {
+                    throw new IllegalArgumentException("Duplicate key for " + key);
+                }
+                hasNull = true;
+                valueForNullKey = values[i];
+                continue;
+            }
+            int j = KEY2INTHASH_CAST(key);
+            while (true) {
+                int index = j & mask;
+                KEY_GENERIC_TYPE prevKey = keyTable[index];
+                if (KEY_IS_NULL(prevKey)) {
+                    // Came to an empty slot. Put the element here.
+                    keyTable[index] = key;
+                    valueTable[index] = values[i];
+                    break;
+                }
+                if (KEY_EQUALS_NOT_NULL(key, prevKey)) {
+                    throw new IllegalArgumentException("Duplicate key for " + key);
+                }
+                j++;
+            }
+        }
+        return new RegularImmutableMap KEY_VALUE_GENERIC_DIAMOND(keyTable, valueTable, hasNull, valueForNullKey, n, hashCode);
+    }
+
+    /**
+     * Returns the number of non-null elements in [0, size) range in the
+     * provided array.
+     */
+    private static KEY_GENERIC int nonNullCount(KEY_GENERIC_TYPE[] elements, int size) {
+        int nonNullCount = 0;
+        for (int i = 0; i < size; ++i) {
+            if (!(KEY_IS_NULL(elements[i]))) {
+                ++nonNullCount;
+            }
+        }
+        return nonNullCount;
+    }
+
+    /** Implementation of this immutable map used for 0 or 2+ elements (not 1). */
+    private static final class RegularImmutableMap KEY_VALUE_GENERIC extends IMMUTABLE_MAP KEY_VALUE_GENERIC {
+        private static final RegularImmutableMap KEY_VALUE_AS_OBJECT EMPTY = new RegularImmutableMap KEY_VALUE_GENERIC_DIAMOND(null, null, false, VALUE_NULL, 0, 0);
+
+        /**
+         * The array of keys.
+         */
+        private final KEY_GENERIC_TYPE[] key;
+
+        /**
+         * The array of values.
+         */
+        private final VALUE_GENERIC_TYPE[] value;
+
+        /** Whether this map contains the null key. */
+        private final boolean containsNullKey;
+
+        /**
+         * If {@link #containsNullKey} is true, this is the value for the null key. Otherwise, this will be
+         * the null value.
+         */
+        private final VALUE_GENERIC_TYPE valueForNullKey;
+
+        private final int size;
+        private final int hashCode;
+
+        private RegularImmutableMap(KEY_GENERIC_TYPE[] key, VALUE_GENERIC_TYPE[] value, boolean containsNullKey, VALUE_GENERIC_TYPE valueForNullKey, int size, int hashCode) {
+            this.key = key;
+            this.value = value;
+            this.containsNullKey = containsNullKey;
+            this.valueForNullKey = valueForNullKey;
+            this.size = size;
+            this.hashCode = hashCode;
+            if (ASSERTS_VALUE) assert containsNullKey || valueForNullKey == VALUE_NULL;
+            if (ASSERTS_VALUE) assert key == null || key.length == value.length;
+        }
+
+        @Override
+        SUPPRESS_WARNINGS_KEY_UNCHECKED
+        public VALUE_GENERIC_TYPE GET_VALUE(final KEY_TYPE k) {
+            if (key == null) {
+                return VALUE_NULL;
+            }
+            if (KEY_EQUALS_NULL(KEY_GENERIC_CAST k)) return containsNullKey ? valueForNullKey : VALUE_NULL;
+
+            KEY_GENERIC_TYPE curr;
+            int pos;
+
+            // The starting point.
+            int mask = key.length - 1;
+            if (KEY_IS_NULL(curr = key[pos = KEY2INTHASH_CAST(k) & mask])) return VALUE_NULL;
+            if (KEY_EQUALS_NOT_NULL_CAST(k, curr)) return value[pos];
+            // There's always an unused entry.
+            while (true) {
+                if (KEY_IS_NULL(curr = key[pos = (pos + 1) & mask])) return VALUE_NULL;
+                if (KEY_EQUALS_NOT_NULL_CAST(k, curr)) return value[pos];
+            }
+        }
+
+        @Override
+        SUPPRESS_WARNINGS_KEY_UNCHECKED
+        public boolean containsKey(final KEY_TYPE k) {
+            if (KEY_EQUALS_NULL(KEY_GENERIC_CAST k)) return containsNullKey;
+            if (key == null) return false;
+
+            KEY_GENERIC_TYPE curr;
+            int pos;
+
+            // The starting point.
+            int mask = key.length - 1;
+            if (KEY_IS_NULL(curr = key[pos = KEY2INTHASH_CAST(k) & mask])) return false;
+            if (KEY_EQUALS_NOT_NULL_CAST(k, curr)) return true;
+            // There's always an unused entry.
+            while (true) {
+                if (KEY_IS_NULL(curr = key[pos = (pos + 1) & mask])) return false;
+                if (KEY_EQUALS_NOT_NULL_CAST(k, curr)) return true;
+            }
+        }
+
+        @Override
+        public boolean containsValue(final VALUE_TYPE v) {
+            if (containsNullKey && VALUE_EQUALS(valueForNullKey, v)) return true;
+            if (value == null) return false;
+            for(int i = value.length; i-- != 0;) if (! KEY_IS_NULL(key[i]) && VALUE_EQUALS(value[i], v)) return true;
+            return false;
+        }
+
+
+#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+        @Override
+        SUPPRESS_WARNINGS_KEY_UNCHECKED
+        public VALUE_GENERIC_TYPE getOrDefault(final KEY_TYPE k, final VALUE_GENERIC_TYPE defaultValue) {
+            if (KEY_EQUALS_NULL(KEY_GENERIC_CAST k)) return containsNullKey ? valueForNullKey : defaultValue;
+            if (key == null) return defaultValue;
+
+            KEY_GENERIC_TYPE curr;
+            int pos;
+
+            // The starting point.
+            int mask = key.length - 1;
+            if (KEY_IS_NULL(curr = key[pos = KEY2INTHASH_CAST(k) & mask])) return defaultValue;
+            if (KEY_EQUALS_NOT_NULL_CAST(k, curr)) return value[pos];
+            // There's always an unused entry.
+            while (true) {
+                if (KEY_IS_NULL(curr = key[(pos = (pos + 1) & mask)])) return defaultValue;
+                if (KEY_EQUALS_NOT_NULL_CAST(k, curr)) return value[pos];
+            }
+        }
+#endif
+
+        /**
+         * The entry class for a hash map does not record key and value, but
+         * rather the position in the hash table of the corresponding entry.
+         */
+        private final class MapEntry implements MAP.Entry KEY_VALUE_GENERIC, Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS> {
+            // The table index this entry refers to.
+            int index;
+
+            MapEntry(final int index) {
+                this.index = index;
+            }
+
+            MapEntry() {}
+
+            @Override
+            public KEY_GENERIC_TYPE ENTRY_GET_KEY() {
+                if (ASSERTS_VALUE) assert index < key.length || containsNullKey;
+                return index == key.length ? KEY_NULL : key[index];
+            }
+
+            @Override
+            public VALUE_GENERIC_TYPE ENTRY_GET_VALUE() {
+                if (ASSERTS_VALUE) assert index < key.length || containsNullKey;
+                return index == value.length ? valueForNullKey : value[index];
+            }
+
+            @Override
+            public VALUE_GENERIC_TYPE setValue(final VALUE_GENERIC_TYPE v) {
+                throw new UnsupportedOperationException();
+            }
+
+#if KEYS_PRIMITIVE
+            @Deprecated
+            @Override
+            public KEY_GENERIC_CLASS getKey() {
+                return KEY2OBJ(index == key.length ? KEY_NULL : key[index]);
+            }
+#endif
+
+#if VALUES_PRIMITIVE
+            @Deprecated
+            @Override
+            public VALUE_GENERIC_CLASS getValue() {
+                return VALUE2OBJ(index == value.length ? valueForNullKey : value[index]);
+            }
+
+            @Deprecated
+            @Override
+            public VALUE_GENERIC_CLASS setValue(final VALUE_GENERIC_CLASS v) {
+                throw new UnsupportedOperationException();
+            }
+#endif
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public boolean equals(final Object o) {
+                if (!(o instanceof Map.Entry)) return false;
+                Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS> e = (Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>)o;
+
+                KEY_GENERIC_TYPE k;
+                VALUE_GENERIC_TYPE v;
+                if (e instanceof MAP.Entry) {
+                    MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry KEY_VALUE_GENERIC) e;
+                    k = entry.ENTRY_GET_KEY();
+                    v = entry.ENTRY_GET_VALUE();
+                } else {
+#if KEYS_PRIMITIVE
+                    if (e.getKey() == null || !(e.getKey() instanceof KEY_CLASS)) return false;
+#endif
+#if VALUES_PRIMITIVE
+                    if (e.getValue() == null || !(e.getValue() instanceof VALUE_CLASS)) return false;
+#endif
+                    k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
+                    v = VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+                }
+
+                return KEY_EQUALS(index == key.length ? KEY_NULL : key[index], k) && VALUE_EQUALS(value[index], v);
+            }
+
+            @Override
+            public int hashCode() {
+                KEY_GENERIC_TYPE k = index == key.length ? KEY_NULL : key[index];
+                VALUE_GENERIC_TYPE v = index == value.length ? valueForNullKey : value[index];
+                return KEY2JAVAHASH(k) ^ VALUE2JAVAHASH(v);
+            }
+
+            @Override
+            public String toString() {
+                return ENTRY_GET_KEY() + "=>" + ENTRY_GET_VALUE();
+            }
+        }
+
+        private class MapIterator {
+            /**
+             * The index of the last entry returned; initially,
+             * {@link #size}.
+             */
+            int pos = key == null ? 0 : key.length;
+            /** A downward counter measuring how many entries must still be returned. */
+            int c = size;
+            /** A boolean telling us whether we should return the entry with the null key. */
+            boolean mustReturnNullKey = RegularImmutableMap.this.containsNullKey;
+
+            public boolean hasNext() {
+                return c != 0;
+            }
+
+            public int nextEntry() {
+                if (!hasNext()) throw new NoSuchElementException();
+
+                c--;
+                if (mustReturnNullKey) {
+                    mustReturnNullKey = false;
+                    return key.length;
+                }
+
+                final KEY_GENERIC_TYPE key[] = RegularImmutableMap.this.key;
+
+                for(;;) {
+                    --pos;
+                    if (ASSERTS_VALUE) assert pos >= 0;
+                    if (! KEY_IS_NULL(key[pos])) return pos;
+                }
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+
+            public int skip(final int n) {
+                int i = n;
+                while (i-- != 0 && hasNext()) nextEntry();
+                return n - i - 1;
+            }
+        }
+
+        private class EntryIterator extends MapIterator implements ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> {
+            private MapEntry entry;
+
+            @Override
+            public MapEntry next() {
+                return entry = new MapEntry(nextEntry());
+            }
+        }
+
+        private class FastEntryIterator extends MapIterator implements ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> {
+            private final MapEntry entry = new MapEntry();
+
+            @Override
+            public MapEntry next() {
+                entry.index = nextEntry();
+                return entry;
+            }
+        }
+
+        private final class MapEntrySet extends AbstractObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
+
+            @Override
+            public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new EntryIterator(); }
+
+            @Override
+            public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> fastIterator() { return new FastEntryIterator(); }
+
+            @Override
+            SUPPRESS_WARNINGS_KEY_VALUE_UNCHECKED
+            public boolean contains(final Object o) {
+                if (!(o instanceof Map.Entry)) return false;
+                final Map.Entry<?,?> e = (Map.Entry<?,?>)o;
+                KEY_GENERIC_TYPE k;
+                VALUE_GENERIC_TYPE v;
+                if (e instanceof MAP.Entry) {
+                    MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry KEY_VALUE_GENERIC) e;
+                    k = entry.ENTRY_GET_KEY();
+                    v = entry.ENTRY_GET_VALUE();
+                } else {
+#if KEYS_PRIMITIVE
+                    if (e.getKey() == null || !(e.getKey() instanceof KEY_CLASS)) return false;
+#endif
+#if VALUES_PRIMITIVE
+                    if (e.getValue() == null || !(e.getValue() instanceof VALUE_CLASS)) return false;
+#endif
+                    k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
+                    v = VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+                }
+
+                if (KEY_EQUALS_NULL(k)) return RegularImmutableMap.this.containsNullKey && VALUE_EQUALS(valueForNullKey, v);
+
+                KEY_GENERIC_TYPE curr;
+                final KEY_GENERIC_TYPE[] key = RegularImmutableMap.this.key;
+                if (key == null) return false;
+                int pos;
+
+                // The starting point.
+                int mask = key.length - 1;
+                if (KEY_IS_NULL(curr = key[pos = KEY2INTHASH(k) & mask])) return false;
+                if (KEY_EQUALS_NOT_NULL(k, curr)) return VALUE_EQUALS(value[pos], v);
+                // There's always an unused entry.
+                while (true) {
+                    if (KEY_IS_NULL(curr = key[pos = (pos + 1) & mask])) return false;
+                    if (KEY_EQUALS_NOT_NULL(k, curr)) return VALUE_EQUALS(value[pos], v);
+                }
+            }
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                if (c instanceof FastEntrySet) {
+                    ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> itr = ((FastEntrySet KEY_VALUE_GENERIC) c).fastIterator();
+                    while (itr.hasNext()) {
+                        if (!contains(itr.next())) return false;
+                    }
+                    return true;
+                } else {
+                    return super.containsAll(c);
+                }
+            }
+
+            @Override
+            SUPPRESS_WARNINGS_KEY_VALUE_UNCHECKED
+            public boolean remove(final Object o) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public int size() {
+                return size;
+            }
+
+            @Override
+            public void clear() {
+                throw new UnsupportedOperationException();
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void forEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+                if (key == null) {
+                    return;
+                }
+                if (containsNullKey) consumer.accept(new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC(KEY_NULL, valueForNullKey));
+                for(int pos = key.length; pos-- != 0;)
+                    if (! KEY_IS_NULL(key[pos])) consumer.accept(new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC(key[pos], value[pos]));
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void fastForEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+                if (key == null) {
+                    return;
+                }
+                final ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND();
+                if (containsNullKey) {
+                    entry.key = KEY_NULL;
+                    entry.value = valueForNullKey;
+                    consumer.accept(entry);
+                }
+                for (int pos = key.length; pos-- != 0;) {
+                    if (! KEY_IS_NULL(key[pos])) {
+                        entry.key = key[pos];
+                        entry.value = value[pos];
+                        consumer.accept(entry);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public FastEntrySet KEY_VALUE_GENERIC ENTRYSET() {
+            return new MapEntrySet();
+        }
+
+        /**
+         * An iterator on keys.
+         */
+        private final class KeyIterator extends MapIterator implements KEY_ITERATOR KEY_GENERIC {
+            public KeyIterator() { super(); }
+
+            @Override
+            public KEY_GENERIC_TYPE NEXT_KEY() {
+                int nextIndex = nextEntry();
+                return nextIndex == key.length ? KEY_NULL : key[nextIndex];
+            }
+        }
+
+        private final class KeySet extends ABSTRACT_SET KEY_GENERIC {
+
+            @Override
+            public KEY_ITERATOR KEY_GENERIC iterator() { return new KeyIterator(); }
+
+            /** {@inheritDoc} */
+            @Override
+#ifdef JDK_PRIMITIVE_KEY_CONSUMER
+            public void forEach(final JDK_PRIMITIVE_KEY_CONSUMER consumer) {
+#else
+            public void forEach(final KEY_CONSUMER KEY_SUPER_GENERIC consumer) {
+#endif
+                if (key == null) return;
+                if (containsNullKey) consumer.accept(KEY_NULL);
+                for(int pos = key.length; pos-- != 0;) {
+                    final KEY_GENERIC_TYPE k = key[pos];
+                    if (! KEY_IS_NULL(k)) consumer.accept(k);
+                }
+            }
+
+            @Override
+            public int size() { return size; }
+
+            @Override
+            public boolean contains(KEY_TYPE k) { return containsKey(k); }
+        }
+
+        @Override
+        public SET KEY_GENERIC keySet() {
+            return new KeySet();
+        }
+
+        /**
+         * An iterator on values.
+         *
+         * <p>We simply override the {@link java.util.ListIterator#next()}/{@link java.util.ListIterator#previous()} methods
+         * (and possibly their type-specific counterparts) so that they return values
+         * instead of entries.
+         */
+        private final class ValueIterator extends MapIterator implements VALUE_ITERATOR VALUE_GENERIC {
+            public ValueIterator() { super(); }
+
+            @Override
+            public VALUE_GENERIC_TYPE NEXT_VALUE() {
+                int nextIndex = nextEntry();
+                return nextIndex == value.length ? valueForNullKey : value[nextIndex];
+            }
+        }
+
+        @Override
+        public VALUE_COLLECTION VALUE_GENERIC values() {
+            return new VALUE_ABSTRACT_COLLECTION VALUE_GENERIC() {
+                @Override
+                public VALUE_ITERATOR VALUE_GENERIC iterator() { return new ValueIterator(); }
+
+                @Override
+                public int size() { return size; }
+
+                @Override
+                public boolean contains(VALUE_TYPE v) { return containsValue(v); }
+
+                /** {@inheritDoc} */
+                @Override
+#ifdef JDK_PRIMITIVE_VALUE_CONSUMER
+                public void forEach(final JDK_PRIMITIVE_VALUE_CONSUMER consumer) {
+#else
+                public void forEach(final VALUE_CONSUMER VALUE_SUPER_GENERIC consumer) {
+#endif
+                    if (value == null) return;
+                    if (containsNullKey) consumer.accept(valueForNullKey);
+                    for(int pos = value.length; pos-- != 0;)
+                        if (! KEY_IS_NULL(key[pos])) consumer.accept(value[pos]);
+                }
+
+            };
+        }
+
+        @Override
+        public int size() {
+            return size;
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+    }
+
+    /** Implementation of this immutable map with exactly one element. */
+    private static class SingletonImmutableMap KEY_VALUE_GENERIC extends IMMUTABLE_MAP KEY_VALUE_GENERIC {
+        private final KEY_GENERIC_TYPE key;
+        private final VALUE_GENERIC_TYPE value;
+
+        private final ABSTRACT_MAP.Entry KEY_VALUE_GENERIC entry;
+
+        private SingletonImmutableMap(KEY_GENERIC_TYPE key, VALUE_GENERIC_TYPE value) {
+            this.key = key;
+            this.value = value;
+            this.entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC(key, value);
+        }
+
+        @Override
+        SUPPRESS_WARNINGS_KEY_UNCHECKED
+        public VALUE_GENERIC_TYPE GET_VALUE(final KEY_TYPE k) {
+            return (KEY_EQUALS(key, k)) ? value : VALUE_NULL;
+        }
+
+        @Override
+        SUPPRESS_WARNINGS_KEY_UNCHECKED
+        public boolean containsKey(final KEY_TYPE k) {
+            return KEY_EQUALS(key, k);
+        }
+
+        @Override
+        public boolean containsValue(final VALUE_TYPE v) {
+            return VALUE_EQUALS(value, v);
+        }
+
+#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+        @Override
+        SUPPRESS_WARNINGS_KEY_UNCHECKED
+        public VALUE_GENERIC_TYPE getOrDefault(final KEY_TYPE k, final VALUE_GENERIC_TYPE defaultValue) {
+            return KEY_EQUALS(key, k) ? value : defaultValue;
+        }
+#endif
+
+        private final class MapEntrySet extends AbstractObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
+
+            @Override
+            public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return ObjectIterators.singleton((MAP.Entry KEY_VALUE_GENERIC) entry); }
+
+            @Override
+            public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> fastIterator() { return ObjectIterators.singleton((MAP.Entry KEY_VALUE_GENERIC) entry); }
+
+            @Override
+            SUPPRESS_WARNINGS_KEY_VALUE_UNCHECKED
+            public boolean contains(final Object o) {
+                if (!(o instanceof Map.Entry)) return false;
+                final Map.Entry<?,?> e = (Map.Entry<?,?>)o;
+                KEY_GENERIC_TYPE k;
+                VALUE_GENERIC_TYPE v;
+                if (e instanceof MAP.Entry) {
+                    MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry KEY_VALUE_GENERIC) e;
+                    k = entry.ENTRY_GET_KEY();
+                    v = entry.ENTRY_GET_VALUE();
+                } else {
+#if KEYS_PRIMITIVE
+                    if (e.getKey() == null || !(e.getKey() instanceof KEY_CLASS)) return false;
+#endif
+#if VALUES_PRIMITIVE
+                    if (e.getValue() == null || !(e.getValue() instanceof VALUE_CLASS)) return false;
+#endif
+                    k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
+                    v = VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+                }
+
+                return KEY_EQUALS(key, k) && VALUE_EQUALS(value, v);
+            }
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                if (c instanceof FastEntrySet) {
+                    ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> itr = ((FastEntrySet KEY_VALUE_GENERIC) c).fastIterator();
+                    while (itr.hasNext()) {
+                        if (!contains(itr.next())) return false;
+                    }
+                    return true;
+                } else {
+                    return super.containsAll(c);
+                }
+            }
+
+            @Override
+            SUPPRESS_WARNINGS_KEY_VALUE_UNCHECKED
+            public boolean remove(final Object o) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public int size() {
+                return 1;
+            }
+
+            @Override
+            public void clear() {
+                throw new UnsupportedOperationException();
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void forEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+                consumer.accept(entry);
+            }
+
+            /** {@inheritDoc} */
+            @Override
+            public void fastForEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+                consumer.accept(entry);
+            }
+        }
+
+        @Override
+        public FastEntrySet KEY_VALUE_GENERIC ENTRYSET() {
+            return new MapEntrySet();
+        }
+
+        private final class KeySet extends ABSTRACT_SET KEY_GENERIC {
+
+            @Override
+            public KEY_ITERATOR KEY_GENERIC iterator() { return KEY_ITERATORS.singleton(key); }
+
+            /** {@inheritDoc} */
+            @Override
+#ifdef JDK_PRIMITIVE_KEY_CONSUMER
+            public void forEach(final JDK_PRIMITIVE_KEY_CONSUMER consumer) {
+#else
+            public void forEach(final KEY_CONSUMER KEY_SUPER_GENERIC consumer) {
+#endif
+                consumer.accept(key);
+            }
+
+            @Override
+            public int size() { return 1; }
+
+            @Override
+            public boolean contains(KEY_TYPE k) { return containsKey(k); }
+        }
+
+        @Override
+        public SET KEY_GENERIC keySet() {
+            return new KeySet();
+        }
+
+        @Override
+        public VALUE_COLLECTION VALUE_GENERIC values() {
+            return new VALUE_ABSTRACT_COLLECTION VALUE_GENERIC() {
+                @Override
+                public VALUE_ITERATOR VALUE_GENERIC iterator() { return VALUE_ITERATORS.singleton(value); }
+
+                @Override
+                public int size() { return 1; }
+
+                @Override
+                public boolean contains(VALUE_TYPE v) { return containsValue(v); }
+
+                /** {@inheritDoc} */
+                @Override
+#ifdef JDK_PRIMITIVE_VALUE_CONSUMER
+                public void forEach(final JDK_PRIMITIVE_VALUE_CONSUMER consumer) {
+#else
+                public void forEach(final VALUE_CONSUMER VALUE_SUPER_GENERIC consumer) {
+#endif
+                    consumer.accept(value);
+                }
+            };
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+
+        @Override
+        public int hashCode() {
+            return entry.hashCode();
+        }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if (other instanceof IMMUTABLE_MAP && hashCode() != other.hashCode()) {
+            return false;
+        }
+        if (! (other instanceof Map)) return false;
+
+        final Map<?,?> m = (Map<?,?>)other;
+        if (m.size() != size()) return false;
+        // Handle multimaps.
+        if (m.keySet().size() != keySet().size()) return false;
+        return ENTRYSET().containsAll(m.entrySet());
+    }
+
+    @Override
+    public void defaultReturnValue(VALUE_GENERIC_TYPE rv) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public VALUE_GENERIC_TYPE defaultReturnValue() {
+        return VALUE_NULL;
+    }
+
+    @Override
+    public void putAll(final Map<? extends KEY_GENERIC_CLASS,? extends VALUE_GENERIC_CLASS> m) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+}
+

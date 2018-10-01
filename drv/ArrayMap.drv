@@ -17,6 +17,8 @@
 
 package PACKAGE;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import it.unimi.dsi.fastutil.objects.AbstractObjectSet;
@@ -184,14 +186,36 @@ public class ARRAY_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENERIC 
 		public boolean contains(Object o) {
 			if (! (o instanceof Map.Entry)) return false;
 			final Map.Entry<?,?> e = (Map.Entry<?,?>)o;
+			KEY_GENERIC_TYPE k;
+			VALUE_GENERIC_TYPE v;
+			if (e instanceof MAP.Entry) {
+				MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry KEY_VALUE_GENERIC) e;
+				k = entry.ENTRY_GET_KEY();
+				v = entry.ENTRY_GET_VALUE();
+			} else {
 #if KEYS_PRIMITIVE
-			if (e.getKey() == null || ! (e.getKey() instanceof KEY_CLASS)) return false;
+				if (e.getKey() == null || ! (e.getKey() instanceof KEY_CLASS)) return false;
 #endif
 #if VALUES_PRIMITIVE
-			if (e.getValue() == null || ! (e.getValue() instanceof VALUE_CLASS)) return false;
+				if (e.getValue() == null || ! (e.getValue() instanceof VALUE_CLASS)) return false;
 #endif
-			final KEY_GENERIC_TYPE k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
-			return ARRAY_MAP.this.containsKey(k) && VALUE_EQUALS(ARRAY_MAP.this.GET_VALUE(k), VALUE_OBJ2TYPE(e.getValue()));
+				k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
+				v = VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+			}
+			return ARRAY_MAP.this.containsKey(k) && VALUE_EQUALS(ARRAY_MAP.this.GET_VALUE(k), v);
+		}
+
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			if (c instanceof FastEntrySet) {
+				Iterator<MAP.Entry KEY_VALUE_GENERIC> itr = ((FastEntrySet KEY_VALUE_GENERIC) c).fastIterator();
+				while (itr.hasNext()) {
+					if (!contains(itr.next())) return false;
+				}
+			return true;
+			} else {
+				return super.containsAll(c);
+			}
 		}
 
 		@Override
@@ -199,14 +223,22 @@ public class ARRAY_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENERIC 
 		public boolean remove(final Object o) {
 			if (!(o instanceof Map.Entry)) return false;
 			final Map.Entry<?,?> e = (Map.Entry<?,?>)o;
+			KEY_GENERIC_TYPE k;
+			VALUE_GENERIC_TYPE v;
+			if (e instanceof MAP.Entry) {
+				MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry KEY_VALUE_GENERIC) e;
+				k = entry.ENTRY_GET_KEY();
+				v = entry.ENTRY_GET_VALUE();
+			} else {
 #if KEYS_PRIMITIVE
-			if (e.getKey() == null || ! (e.getKey() instanceof KEY_CLASS)) return false;
+				if (e.getKey() == null || ! (e.getKey() instanceof KEY_CLASS)) return false;
 #endif
 #if VALUES_PRIMITIVE
-			if (e.getValue() == null || ! (e.getValue() instanceof VALUE_CLASS)) return false;
+				if (e.getValue() == null || ! (e.getValue() instanceof VALUE_CLASS)) return false;
 #endif
-			final KEY_GENERIC_TYPE k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
-			final VALUE_GENERIC_TYPE v = VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+				k = KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
+				v = VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+			}
 
 			final int oldPos = ARRAY_MAP.this.findKey(k);
 			if (oldPos == -1 || ! VALUE_EQUALS(v, ARRAY_MAP.this.value[oldPos])) return false;
