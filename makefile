@@ -181,7 +181,7 @@ $(IMMUTABLE_LIST): drv/ImmutableList.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(IMMUTABLE_LIST)
 
-IMMUTABLE_SET := $(foreach k,$(TYPE_NOBOOL_NOOBJ), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Immutable$(k)Set.c)
+IMMUTABLE_SET := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Immutable$(k)Set.c)
 $(IMMUTABLE_SET): drv/ImmutableSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(IMMUTABLE_SET)
@@ -455,7 +455,7 @@ CSOURCES += $(ARRAY_INDIRECT_PRIORITY_QUEUES)
 # Static containers
 #
 
-IMMUTABLES := $(foreach k,$(TYPE_NOBOOL_NOOBJ), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Immutables.c)
+IMMUTABLES := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Immutables.c)
 $(IMMUTABLES): drv/Immutables.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(IMMUTABLES)
@@ -561,10 +561,15 @@ $(COMPARATORS_STATIC): drv/Comparators.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(COMPARATORS_STATIC)
 
-COLLECTORS := $(foreach k,$(TYPE_NOBOOL_NOOBJ), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Collectors.c)
+COLLECTORS := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Collectors.c)
 $(COLLECTORS): drv/Collectors.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(COLLECTORS)
+
+MAP_COLLECTORS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)Collectors.c))
+$(MAP_COLLECTORS): drv/MapCollectors.drv; ./gencsource.sh $< $@ >$@
+
+CSOURCES += $(MAP_COLLECTORS)
 
 #
 # Fragmented stuff

@@ -1,0 +1,72 @@
+package PACKAGE;
+
+import java.util.Map;
+import java.util.stream.Collector;
+
+public final class MAP_COLLECTORS {
+
+    private MAP_COLLECTORS() {
+    }
+
+    public static KEY_VALUE_GENERIC_COLLECTOR Collector<COLLECTOR_GENERIC, MAP KEY_VALUE_GENERIC, MAP KEY_VALUE_GENERIC> toMap(COLLECTOR_KEY_FUNCTION keyFunction, COLLECTOR_VALUE_FUNCTION valueFunction) {
+        return Collector.of(
+                OPEN_HASH_MAP KEY_VALUE_GENERIC::new,
+                (m, e) -> m.put((KEY_GENERIC_TYPE) keyFunction.COLLECTOR_KEY_APPLY_METHOD(e), (VALUE_GENERIC_TYPE) valueFunction.COLLECTOR_VALUE_APPLY_METHOD(e)),
+                (m1, m2) -> {
+                    m1.putAll(m2);
+                    return m1;
+                });
+    }
+
+    public static KEY_VALUE_GENERIC Collector<MAP.Entry KEY_VALUE_GENERIC, MAP KEY_VALUE_GENERIC, MAP KEY_VALUE_GENERIC> toMap() {
+        return toMap(MAP.Entry::ENTRY_GET_KEY, MAP.Entry::ENTRY_GET_VALUE);
+    }
+
+    /**
+     * Use this method only if stream has non-fastutil entry objects (i.e entry key/value are boxed types), and it's
+     * not possible to avoid such entry objects without incurring extra overhead of creating fastutil entry objects.
+     * Otherwise, if stream was already mapped to fastutil entry objects, the regular one above should be used.
+     */
+    public static KEY_VALUE_GENERIC Collector<Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS>, MAP KEY_VALUE_GENERIC, MAP KEY_VALUE_GENERIC> toMapSlow() {
+        return toMap(MAP_COLLECTORS::getKey, MAP_COLLECTORS::getValue);
+    }
+
+    public static KEY_VALUE_GENERIC_COLLECTOR Collector<COLLECTOR_GENERIC, ?, IMMUTABLE_MAP KEY_VALUE_GENERIC> toImmutableMap(COLLECTOR_KEY_FUNCTION keyFunction, COLLECTOR_VALUE_FUNCTION valueFunction) {
+        return Collector.of(
+                IMMUTABLE_MAP.Builder KEY_VALUE_GENERIC::new,
+                (m, e) -> m.put((KEY_GENERIC_TYPE) keyFunction.COLLECTOR_KEY_APPLY_METHOD(e), (VALUE_GENERIC_TYPE) valueFunction.COLLECTOR_VALUE_APPLY_METHOD(e)),
+                IMMUTABLE_MAP.Builder::combine,
+                IMMUTABLE_MAP.Builder::build);
+    }
+
+    public static KEY_VALUE_GENERIC Collector<MAP.Entry KEY_VALUE_GENERIC, ?, IMMUTABLE_MAP KEY_VALUE_GENERIC> toImmutableMap() {
+        return toImmutableMap(MAP.Entry::ENTRY_GET_KEY, MAP.Entry::ENTRY_GET_VALUE);
+    }
+
+    /**
+     * Use this method only if stream has non-fastutil entry objects (i.e entry key/value are boxed types), and it's
+     * not possible to avoid such entry objects without incurring extra overhead of creating fastutil entry objects.
+     * Otherwise, if stream was already mapped to fastutil entry objects, the regular one above should be used.
+     */
+    public static KEY_VALUE_GENERIC Collector<Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS>, ?, IMMUTABLE_MAP KEY_VALUE_GENERIC> toImmutableMapSlow() {
+        return toImmutableMap(MAP_COLLECTORS::getKey, MAP_COLLECTORS::getValue);
+    }
+
+    private static KEY_VALUE_GENERIC KEY_GENERIC_TYPE getKey(Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS> e) {
+        if (e instanceof MAP.Entry) {
+            MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry) e;
+            return entry.ENTRY_GET_KEY();
+        } else {
+            return KEY_OBJ2TYPE(KEY_GENERIC_CAST e.getKey());
+        }
+    }
+
+    private static KEY_VALUE_GENERIC VALUE_GENERIC_TYPE getValue(Map.Entry<? extends KEY_GENERIC_CLASS, ? extends VALUE_GENERIC_CLASS> e) {
+        if (e instanceof MAP.Entry) {
+            MAP.Entry KEY_VALUE_GENERIC entry = (MAP.Entry) e;
+            return entry.ENTRY_GET_VALUE();
+        } else {
+            return VALUE_OBJ2TYPE(VALUE_GENERIC_CAST e.getValue());
+        }
+    }
+}

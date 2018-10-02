@@ -132,14 +132,16 @@ $(if [[ "${CLASS[$k]}" != "" ]]; then\
 			echo "#define JDK_PRIMITIVE_KEY_CONSUMER java.util.function.${TYPE_CAP[$wk]}Consumer\\n";\
 			echo "#define JDK_PRIMITIVE_PREDICATE java.util.function.${TYPE_CAP[$wk]}Predicate\\n";\
 			echo "#define JDK_PRIMITIVE_ITERATOR PrimitiveIterator.Of${TYPE_CAP[$wk]}\\n";\
+			echo "#define JDK_PRIMITIVE_SPLITERATOR Spliterator.Of${TYPE_CAP[$wk]}\\n";\
+			echo "#define JDK_PRIMITIVE_STREAM ${TYPE_CAP[$wk]}Stream\\n";\
+			echo "#define JDK_PRIMITIVE_STREAM_METHOD ${TYPE[$wk]}Stream\\n";\
+			echo "#define WIDENED_KEY_PACKAGE it.unimi.dsi.fastutil.${TYPE_LC2[$wk]}s\n";\
+			echo "#define WIDENED_KEY_ITERATORS ${TYPE_CAP2[$wk]}Iterators\n";\
+			echo "#define JDK_PRIMITIVE_OBJKEY_CONSUMER Obj${TYPE_CAP[$wk]}Consumer\\n";\
 		fi\
 	else\
 		echo "#define KEYS_REFERENCE 1\\n";\
 		echo "#define JDK_KEY_TO_GENERIC_FUNCTION java.util.function.Function\\n";\
-	fi;\
-	if [[ "${CLASS[$k]}" == "Integer" || "${CLASS[$k]}" == "Long" || "${CLASS[$k]}" == "Double" ]]; then\
-		echo "#define JDK_PRIMITIVE_ITERATOR PrimitiveIterator.Of${TYPE_CAP[$k]}\\n";\
-		echo "#define JDK_PRIMITIVE_SPLITERATOR Spliterator.Of${TYPE_CAP[$k]}\\n";\
 	fi;\
  fi)\
 $(if [[ "${CLASS[$v]}" != "" ]]; then\
@@ -177,6 +179,7 @@ $(if [[ "${CLASS[$k]}" != "" && "${CLASS[$v]}" != "" ]]; then\
 			echo "#define JDK_PRIMITIVE_FUNCTION_APPLY test\\n";\
 		fi;\
 	fi;\
+	echo "#define COLLECTOR_GENERIC T\\n";\
  fi)\
 $(if [[ "${CLASS[$k]}" != "" ]]; then\
 	if [[ "${TYPE[$wk]}" == "${TYPE[$k]}" ]]; then\
@@ -226,6 +229,9 @@ fi)\
 "#define SUPPRESS_WARNINGS_KEY_UNCHECKED @SuppressWarnings(\"unchecked\")\n"\
 "#define SUPPRESS_WARNINGS_KEY_RAWTYPES @SuppressWarnings(\"rawtypes\")\n"\
 "#define SUPPRESS_WARNINGS_KEY_UNCHECKED_RAWTYPES @SuppressWarnings({\"unchecked\",\"rawtypes\"})\n"\
+"#define KEY_AS_OBJECT <Object>\n"\
+"#define COLLECTOR_KEY_FUNCTION java.util.function.Function<T, ? extends K>\n"\
+"#define COLLECTOR_KEY_APPLY_METHOD apply\n"\
 "#if defined(Custom)\n"\
 "#define SUPPRESS_WARNINGS_CUSTOM_KEY_UNCHECKED @SuppressWarnings(\"unchecked\")\n"\
 "#else\n"\
@@ -249,6 +255,9 @@ fi)\
 "#define SUPPRESS_WARNINGS_KEY_RAWTYPES\n"\
 "#define SUPPRESS_WARNINGS_KEY_UNCHECKED_RAWTYPES\n"\
 "#define SUPPRESS_WARNINGS_CUSTOM_KEY_UNCHECKED\n"\
+"#define KEY_AS_OBJECT\n"\
+"#define COLLECTOR_KEY_FUNCTION java.util.function.To${TYPE_CAP[$wk]}Function<T>\n"\
+"#define COLLECTOR_KEY_APPLY_METHOD applyAs${TYPE_CAP[$wk]}\n"\
 "#endif\n"\
 \
 "#if VALUES_REFERENCE\n"\
@@ -264,6 +273,8 @@ fi)\
 "#define VALUE_GENERIC_ARRAY_CAST (V[])\n"\
 "#define SUPPRESS_WARNINGS_VALUE_UNCHECKED @SuppressWarnings(\"unchecked\")\n"\
 "#define SUPPRESS_WARNINGS_VALUE_RAWTYPES @SuppressWarnings(\"rawtypes\")\n"\
+"#define COLLECTOR_VALUE_FUNCTION java.util.function.Function<T, ? extends V>\n"\
+"#define COLLECTOR_VALUE_APPLY_METHOD apply\n"\
 "#else\n"\
 "#define VALUE_GENERIC_CLASS VALUE_CLASS\n"\
 "#define VALUE_GENERIC_TYPE VALUE_TYPE\n"\
@@ -277,6 +288,8 @@ fi)\
 "#define VALUE_GENERIC_ARRAY_CAST\n"\
 "#define SUPPRESS_WARNINGS_VALUE_UNCHECKED\n"\
 "#define SUPPRESS_WARNINGS_VALUE_RAWTYPES\n"\
+"#define COLLECTOR_VALUE_FUNCTION java.util.function.To${TYPE_CAP[$wv]}Function<T>\n"\
+"#define COLLECTOR_VALUE_APPLY_METHOD applyAs${TYPE_CAP[$wv]}\n"\
 "#endif\n"\
 \
 "#if KEYS_REFERENCE\n"\
@@ -285,11 +298,13 @@ fi)\
 "#define KEY_VALUE_GENERIC_DIAMOND <>\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC <? extends K, ? extends V>\n"\
 "#define KEY_VALUE_AS_OBJECT <Object, Object>\n"\
+"#define KEY_VALUE_GENERIC_COLLECTOR <T, K, V>\n"\
 "#else\n"\
 "#define KEY_VALUE_GENERIC <K>\n"\
 "#define KEY_VALUE_GENERIC_DIAMOND <>\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC <? extends K>\n"\
 "#define KEY_VALUE_AS_OBJECT <Object>\n"\
+"#define KEY_VALUE_GENERIC_COLLECTOR <T, K>\n"\
 "#endif\n"\
 "#else\n"\
 "#if VALUES_REFERENCE\n"\
@@ -297,11 +312,13 @@ fi)\
 "#define KEY_VALUE_GENERIC_DIAMOND <>\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC <? extends V>\n"\
 "#define KEY_VALUE_AS_OBJECT <Object>\n"\
+"#define KEY_VALUE_GENERIC_COLLECTOR <T, V>\n"\
 "#else\n"\
 "#define KEY_VALUE_GENERIC\n"\
 "#define KEY_VALUE_GENERIC_DIAMOND\n"\
 "#define KEY_VALUE_EXTENDS_GENERIC\n"\
 "#define KEY_VALUE_AS_OBJECT\n"\
+"#define KEY_VALUE_GENERIC_COLLECTOR <T>\n"\
 "#endif\n"\
 "#endif\n"\
 \
@@ -417,6 +434,7 @@ fi)\
 "#define BIG_LISTS ${TYPE_CAP[$k]}BigLists\n"\
 "#define IMMUTABLES ${TYPE_CAP[$k]}Immutables\n"\
 "#define MAPS ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}Maps\n"\
+"#define MAP_COLLECTORS ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}Collectors\n"\
 "#define FUNCTIONS ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}Functions\n"\
 "#define SORTED_MAPS ${TYPE_CAP[$k]}2${TYPE_CAP[$v]}SortedMaps\n"\
 "#define PRIORITY_QUEUES ${TYPE_CAP2[$k]}PriorityQueues\n"\
@@ -428,7 +446,7 @@ fi)\
 "#define ITERATORS ${TYPE_CAP2[$k]}Iterators\n"\
 "#define BIG_LIST_ITERATORS ${TYPE_CAP2[$k]}BigListIterators\n"\
 "#define COMPARATORS ${TYPE_CAP2[$k]}Comparators\n"\
-"#define COLLECTORS ${TYPE_CAP2[$k]}Collectors\n"\
+"#define COLLECTORS ${TYPE_CAP[$k]}Collectors\n"\
 \
 \
 "/* Static containers (values) */\n"\

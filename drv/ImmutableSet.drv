@@ -20,9 +20,17 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.HashCommon;
+
+#ifdef JDK_PRIMITIVE_STREAM
+import java.util.stream.JDK_PRIMITIVE_STREAM;
+#if KEY_WIDENED
+import WIDENED_KEY_PACKAGE.WIDENED_KEY_ITERATORS;
+#endif
+#endif
 
 /**
  * A type-specific immutable {@link java.util.Set}. It provides some additional
@@ -37,61 +45,79 @@ import it.unimi.dsi.fastutil.HashCommon;
  * methods are adapted from Guava implementation which is licensed under
  * Apache 2.0.
  */
-public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
+public abstract class IMMUTABLE_SET KEY_GENERIC extends ABSTRACT_SET KEY_GENERIC {
 
     /** Returns the empty immutable set. */
-    public static IMMUTABLE_SET of() {
-        return RegularImmutableSet.EMPTY;
+    public static KEY_GENERIC IMMUTABLE_SET KEY_GENERIC of() {
+        return (IMMUTABLE_SET KEY_GENERIC) RegularImmutableSet.EMPTY;
     }
 
     /** Returns an immutable set containing {@code element}. */
-    public static IMMUTABLE_SET of(KEY_TYPE element) {
+    public static KEY_GENERIC IMMUTABLE_SET KEY_GENERIC of(KEY_GENERIC_TYPE element) {
         return new SingletonImmutableSet(element);
     }
 
     /**
      * Returns an immutable set containing the given elements.
      */
-    public static IMMUTABLE_SET of(KEY_TYPE... elements) {
-    	// Make a copy of the provided elements array since construct
+    public static KEY_GENERIC IMMUTABLE_SET KEY_GENERIC of(KEY_GENERIC_TYPE... elements) {
+        // Make a copy of the provided elements array since construct
         // method modifies the provided array and we don't own the
         // provided elements array here.
-		KEY_TYPE[] copy = Arrays.copyOf(elements, elements.length);
+        KEY_GENERIC_TYPE[] copy = Arrays.copyOf(elements, elements.length);
         return construct(elements.length, copy);
     }
 
     /**
      * Returns an immutable set containing each of {@code elements}.
      */
-    public static IMMUTABLE_SET copyOf(Collection<KEY_GENERIC_CLASS> elements) {
+    public static KEY_GENERIC IMMUTABLE_SET KEY_GENERIC copyOf(Collection<KEY_GENERIC_CLASS> elements) {
         if (elements instanceof IMMUTABLE_SET) {
-            return (IMMUTABLE_SET) elements;
+            return (IMMUTABLE_SET KEY_GENERIC) elements;
         }
         if (elements instanceof COLLECTION) {
-            return construct(elements.size(), ((COLLECTION) elements).TO_KEY_ARRAY());
+            COLLECTION KEY_GENERIC c = (COLLECTION) elements;
+            return construct(elements.size(), KEY_GENERIC_ARRAY_CAST c.TO_KEY_ARRAY());
         }
-        return construct(elements.size(), new ARRAY_LIST(elements).TO_KEY_ARRAY());
+        KEY_GENERIC_TYPE[] copy = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[elements.size()];
+        int index = 0;
+        for (KEY_TYPE e : elements) {
+            copy[index] = KEY_GENERIC_CAST e;
+            index++;
+        }
+        return construct(elements.size(), copy);
     }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR && !KEY_WIDENED
     @Override
     public abstract JDK_PRIMITIVE_SPLITERATOR spliterator();
 #endif
 
+#ifdef JDK_PRIMITIVE_STREAM
+    @Override
+    public JDK_PRIMITIVE_STREAM JDK_PRIMITIVE_STREAM_METHOD() {
+#if KEY_WIDENED
+        return StreamSupport.JDK_PRIMITIVE_STREAM_METHOD(Spliterators.spliterator(WIDENED_KEY_ITERATORS.wrap(iterator()), size(), Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED), false);
+#else
+        return StreamSupport.JDK_PRIMITIVE_STREAM_METHOD(spliterator(), false);
+#endif
+    }
+#endif
+
     /** Returns a new Builder. */
-    public static Builder builder() {
-        return new Builder();
+    public static KEY_GENERIC Builder KEY_GENERIC builder() {
+        return new Builder KEY_GENERIC_DIAMOND();
     }
 
     /**
      * Returns a new Builder which is initialized with the provided initial
      * capacity.
     */
-    public static Builder builder(int initialCapacity) {
-        return new Builder(initialCapacity);
+    public static KEY_GENERIC Builder KEY_GENERIC builder(int initialCapacity) {
+        return new Builder KEY_GENERIC_DIAMOND(initialCapacity);
     }
 
-    public static class Builder extends IMMUTABLES.ArrayBasedBuilder {
+    public static class Builder KEY_GENERIC extends IMMUTABLES.ArrayBasedBuilder KEY_GENERIC {
         public Builder(int initialCapacity) {
             super(initialCapacity);
         }
@@ -101,43 +127,43 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
         }
 
         @Override
-        public Builder add(KEY_TYPE element) {
+        public Builder KEY_GENERIC add(KEY_GENERIC_TYPE element) {
             super.add(element);
             return this;
         }
 
         @Override
-        public Builder add(KEY_TYPE... elements) {
+        public Builder KEY_GENERIC add(KEY_GENERIC_TYPE... elements) {
             super.add(elements);
             return this;
         }
 
         @Override
-        public Builder addAll(LIST elements) {
+        public Builder KEY_GENERIC addAll(LIST KEY_GENERIC elements) {
             super.addAll(elements);
             return this;
         }
 
         @Override
-        public Builder addAll(COLLECTION elements) {
+        public Builder KEY_GENERIC addAll(COLLECTION KEY_GENERIC elements) {
             super.addAll(elements);
             return this;
         }
 
         @Override
-        public Builder addAll(Iterable<KEY_GENERIC_CLASS> elements) {
+        public Builder KEY_GENERIC addAll(Iterable<KEY_GENERIC_CLASS> elements) {
             super.addAll(elements);
             return this;
         }
 
         @Override
-        Builder combine(IMMUTABLES.ArrayBasedBuilder other) {
+        Builder KEY_GENERIC combine(IMMUTABLES.ArrayBasedBuilder KEY_GENERIC other) {
             super.combine(other);
             return this;
         }
 
-        public IMMUTABLE_SET build() {
-            IMMUTABLE_SET result = construct(size, elements);
+        public IMMUTABLE_SET KEY_GENERIC build() {
+            IMMUTABLE_SET KEY_GENERIC result = construct(size, elements);
             // construct has the side effect of de-duping contents, so we
             // update size accordingly.
             size = result.size();
@@ -150,7 +176,7 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
      * specified array. Note that this method modifies the provided
      * {@code elements} array.
      */
-    private static IMMUTABLE_SET construct(int n, KEY_TYPE... elements) {
+    private static KEY_GENERIC IMMUTABLE_SET KEY_GENERIC construct(int n, KEY_GENERIC_TYPE... elements) {
         switch (n) {
             case 0:
                 return of();
@@ -159,67 +185,65 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
             default:
                 // continue below to handle the general case
         }
-        int nonZeroCount = nonZeroCount(elements, n);
-        if (nonZeroCount == 0) {
-            // All elements are zero.
-            return new SingletonImmutableSet((KEY_TYPE) 0);
+        int nonNullCount = nonNullCount(elements, n);
+        if (nonNullCount == 0) {
+            // All elements are null.
+            return new SingletonImmutableSet(KEY_NULL);
         }
 
-        int tableSize = chooseTableSize(nonZeroCount);
-        KEY_TYPE[] table = new KEY_TYPE[tableSize];
+        int tableSize = chooseTableSize(nonNullCount);
+        KEY_GENERIC_TYPE[] table = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[tableSize];
         int mask = tableSize - 1;
-        int hashCode = 0;
         int uniques = 0;
-        boolean hasZero = false;
+        boolean hasNull = false;
         for (int i = 0; i < n; i++) {
-            KEY_TYPE element = elements[i];
-            if (element == 0) {
-                hasZero = true;
+            KEY_GENERIC_TYPE element = elements[i];
+            if (KEY_IS_NULL(element)) {
+                hasNull = true;
                 continue;
             }
             int j = KEY2INTHASH(element);
             while (true) {
                 int index = j & mask;
-                KEY_TYPE value = table[index];
-                if (value == 0) {
+                KEY_GENERIC_TYPE value = table[index];
+                if (KEY_IS_NULL(value)) {
                     // Came to an empty slot. Put the element here.
                     elements[uniques++] = element;
                     table[index] = element;
-                    hashCode += KEY2JAVAHASH(element);
                     break;
                 }
-                if (value == element) {
+                if (KEY_EQUALS_NOT_NULL(value, element)) {
                     break;
                 }
                 j++;
             }
         }
-        if (uniques == 1 && !hasZero) {
+        if (uniques == 1 && !hasNull) {
             return new SingletonImmutableSet(elements[0]);
         }
-        int size = uniques + (hasZero ? 1 : 0);
+        int size = uniques + (hasNull ? 1 : 0);
         if (tableSize != chooseTableSize(uniques)) {
             // Resize the table when the array includes too many duplicates.
-            if (hasZero) {
-                elements[uniques] = 0;
+            if (hasNull) {
+                elements[uniques] = KEY_NULL;
             }
             return construct(size, elements);
         }
-        return new RegularImmutableSet(table, mask, hasZero, size, hashCode);
+        return new RegularImmutableSet KEY_GENERIC_DIAMOND(table, hasNull, size);
     }
 
     /**
-     * Returns the number of non-zero elements in [0, size) range in the
+     * Returns the number of non-null elements in [0, size) range in the
      * provided array.
      */
-    private static int nonZeroCount(KEY_TYPE[] elements, int size) {
-        int nonZeroCount = 0;
+    private static KEY_GENERIC int nonNullCount(KEY_GENERIC_TYPE[] elements, int size) {
+        int nonNullCount = 0;
         for (int i = 0; i < size; ++i) {
-            if (elements[i] != 0) {
-                ++nonZeroCount;
+            if (!(KEY_IS_NULL(elements[i]))) {
+                ++nonNullCount;
             }
         }
-        return nonZeroCount;
+        return nonNullCount;
     }
 
     /**
@@ -235,42 +259,38 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
     }
 
     /** Implementation of this immutable set used for 0 or 2+ elements (not 1). */
-    private static class RegularImmutableSet extends IMMUTABLE_SET {
-        private static final RegularImmutableSet EMPTY = new RegularImmutableSet(null, 0, false, 0, 0);
+    static class RegularImmutableSet KEY_GENERIC extends IMMUTABLE_SET KEY_GENERIC {
+        static final RegularImmutableSet KEY_AS_OBJECT EMPTY = new RegularImmutableSet KEY_GENERIC_DIAMOND(null, false, 0);
 
         /** The array of elements in hashed positions. */
-        private final KEY_TYPE[] table;
-        /** 'and' with an int to get a valid table index. */
-        private final int mask;
-        /** Whether this set contains zero. */
-        private final boolean hasZero;
+        private final KEY_GENERIC_TYPE[] table;
+        /** Whether this set contains null. */
+        private final boolean hasNull;
         private final int size;
-        private final int hashCode;
 
-        private RegularImmutableSet(KEY_TYPE[] table, int mask, boolean hasZero, int size, int hashCode) {
+        RegularImmutableSet(KEY_GENERIC_TYPE[] table, boolean hasNull, int size) {
             this.table = table;
-            this.mask = mask;
-            this.hasZero = hasZero;
+            this.hasNull = hasNull;
             this.size = size;
-            this.hashCode = hashCode;
         }
 
         @Override
         public boolean contains(KEY_TYPE k) {
-            if (k == 0) {
-                return hasZero;
+            if (KEY_IS_NULL(k)) {
+                return hasNull;
             }
             if (table == null) {
                 return false;
             }
+            int mask = table.length - 1;
             int i = KEY2INTHASH(k);
             while (true) {
                 i &= mask;
-                KEY_TYPE candidate = table[i];
-                if (candidate == 0) {
+                KEY_GENERIC_TYPE candidate = table[i];
+                if (KEY_IS_NULL(candidate)) {
                     return false;
                 }
-                if (candidate == k) {
+                if (KEY_EQUALS_NOT_NULL(candidate, k)) {
                     return true;
                 }
                 i++;
@@ -278,14 +298,14 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
         }
 
         @Override
-        public KEY_ITERATOR iterator() {
+        public KEY_ITERATOR KEY_GENERIC iterator() {
             if (table == null) {
                 return ITERATORS.EMPTY_ITERATOR;
             }
             return new SetIterator();
         }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR  && !KEY_WIDENED
 		@Override
         public JDK_PRIMITIVE_SPLITERATOR spliterator() {
             return Spliterators.spliterator(iterator(), size, Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT);
@@ -299,6 +319,17 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
 
         @Override
         public int hashCode() {
+            if (table == null) {
+                return 0;
+            }
+            int hashCode = 0;
+            for (int i = 0; i < table.length; i++) {
+                KEY_GENERIC_TYPE element = table[i];
+                if (KEY_IS_NULL(element)) {
+                    continue;
+                }
+                hashCode += KEY2JAVAHASH(element);
+            }
             return hashCode;
         }
 
@@ -307,14 +338,11 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
             if (other == this) {
                 return true;
             }
-            if (other instanceof IMMUTABLE_SET && hashCode != other.hashCode()) {
-                return false;
-            }
             return super.equals(other);
         }
 
         /** An iterator over a hash set. */
-        private class SetIterator implements KEY_ITERATOR {
+        private class SetIterator implements KEY_ITERATOR KEY_GENERIC {
             /**
              * The index of the last entry returned; initially,
              * {@link #size}.
@@ -327,8 +355,8 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
              */
             private int c = size;
 
-            /** Whether zero should be returned. */
-            private boolean mustReturnZero = hasZero;
+            /** Whether null should be returned. */
+            private boolean mustReturnNull = hasNull;
 
             @Override
             public boolean hasNext() {
@@ -336,18 +364,18 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
             }
 
             @Override
-            public KEY_TYPE NEXT_KEY() {
+            public KEY_GENERIC_TYPE NEXT_KEY() {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
                 c--;
-                if (mustReturnZero) {
-                    mustReturnZero = false;
-                    return 0;
+                if (mustReturnNull) {
+                    mustReturnNull = false;
+                    return KEY_NULL;
                 }
                 while (true) {
                     --pos;
-                    if (table[pos] != 0) {
+                    if (!KEY_IS_NULL(table[pos])) {
                         return table[pos];
                     }
                 }
@@ -356,16 +384,16 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
     }
 
     /** Implementation of this immutable set with exactly one element. */
-    private static class SingletonImmutableSet extends IMMUTABLE_SET {
-        private final KEY_TYPE element;
+    static class SingletonImmutableSet KEY_GENERIC extends IMMUTABLE_SET KEY_GENERIC {
+        private final KEY_GENERIC_TYPE element;
 
-        private SingletonImmutableSet(KEY_TYPE element) {
+        SingletonImmutableSet(KEY_GENERIC_TYPE element) {
             this.element = element;
         }
 
         @Override
         public boolean contains(KEY_TYPE k) {
-            return element == k;
+            return KEY_EQUALS(element, k);
         }
 
         @Override
@@ -383,9 +411,6 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
             if (other == this) {
                 return true;
             }
-            if (other instanceof IMMUTABLE_SET && hashCode() != other.hashCode()) {
-                return false;
-            }
             return super.equals(other);
         }
 
@@ -394,7 +419,7 @@ public abstract class IMMUTABLE_SET extends ABSTRACT_SET {
             return ITERATORS.singleton(element);
         }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR  && !KEY_WIDENED
 		@Override
         public JDK_PRIMITIVE_SPLITERATOR spliterator() {
             return IMMUTABLES.singletonSpliterator(element);

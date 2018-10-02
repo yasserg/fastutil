@@ -21,6 +21,16 @@ import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
+#ifdef JDK_PRIMITIVE_STREAM
+import java.util.stream.JDK_PRIMITIVE_STREAM;
+import java.util.stream.StreamSupport;
+
+#if KEY_WIDENED
+import WIDENED_KEY_PACKAGE.WIDENED_KEY_ITERATORS;
+#endif
+
+#endif
+
 /**
  * A type-specific immutable {@link java.util.List}. It provides some
  * additional methods compared to {@link java.util.List} that use
@@ -87,9 +97,20 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
         return new ImmutableSubList(this, from, to);
     }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR && !KEY_WIDENED
     @Override
     public abstract JDK_PRIMITIVE_SPLITERATOR spliterator();
+#endif
+
+#ifdef JDK_PRIMITIVE_STREAM
+    @Override
+    public JDK_PRIMITIVE_STREAM JDK_PRIMITIVE_STREAM_METHOD() {
+#if KEY_WIDENED
+        return StreamSupport.JDK_PRIMITIVE_STREAM_METHOD(Spliterators.spliterator(WIDENED_KEY_ITERATORS.wrap(iterator()), size(), Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED), false);
+#else
+        return StreamSupport.JDK_PRIMITIVE_STREAM_METHOD(spliterator(), false);
+#endif
+    }
 #endif
 
     /** Implementation of this immutable list used for 0 or 2+ elements (not 1). */
@@ -131,7 +152,7 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
             return data.length;
         }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR && !KEY_WIDENED
         @Override
         public JDK_PRIMITIVE_SPLITERATOR spliterator() {
             return Spliterators.spliterator(data, Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
@@ -160,7 +181,7 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
             return 1;
         }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR && !KEY_WIDENED
 		@Override
         public JDK_PRIMITIVE_SPLITERATOR spliterator() {
             return IMMUTABLES.singletonSpliterator(element);
@@ -311,13 +332,12 @@ public abstract class IMMUTABLE_LIST extends ABSTRACT_LIST {
             };
         }
 
-#ifdef JDK_PRIMITIVE_SPLITERATOR
+#if defined JDK_PRIMITIVE_SPLITERATOR && !KEY_WIDENED
         @Override
         public JDK_PRIMITIVE_SPLITERATOR spliterator() {
             return Spliterators.spliterator(iterator(), size(), Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
         }
 #endif
-
     }
 }
 

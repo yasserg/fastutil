@@ -23,34 +23,41 @@ final class IMMUTABLES {
 
     private IMMUTABLES() { }
 
-    private abstract static class Builder {
+    private abstract static class Builder KEY_GENERIC {
         Builder() { }
 
-        public abstract Builder add(KEY_TYPE element);
+        public abstract Builder KEY_GENERIC add(KEY_GENERIC_TYPE element);
 
-        public Builder add(KEY_TYPE... elements) {
-            for (KEY_TYPE element : elements) {
+        public Builder KEY_GENERIC add(KEY_GENERIC_TYPE... elements) {
+            for (KEY_GENERIC_TYPE element : elements) {
                 add(element);
             }
             return this;
         }
 
-        public Builder addAll(Iterable<KEY_GENERIC_CLASS> elements) {
-            for (KEY_TYPE element : elements) {
+        public Builder KEY_GENERIC addAll(Iterable<KEY_GENERIC_CLASS> elements) {
+            if (elements instanceof COLLECTION) {
+                KEY_ITERATOR itr = ((COLLECTION KEY_GENERIC) elements).iterator();
+                while (itr.hasNext()) {
+                    add(KEY_GENERIC_CAST itr.NEXT_KEY());
+                }
+                return this;
+            }
+            for (KEY_GENERIC_TYPE element : elements) {
                 add(element);
             }
             return this;
         }
     }
 
-    abstract static class ArrayBasedBuilder extends Builder {
+    abstract static class ArrayBasedBuilder KEY_GENERIC extends Builder KEY_GENERIC {
         static final int DEFAULT_INITIAL_CAPACITY = 4;
 
-        protected KEY_TYPE[] elements;
+        protected KEY_GENERIC_TYPE[] elements;
         protected int size;
 
         ArrayBasedBuilder(int initialCapacity) {
-            elements = new KEY_TYPE[initialCapacity];
+            elements = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[initialCapacity];
             size = 0;
         }
 
@@ -62,21 +69,21 @@ final class IMMUTABLES {
         }
 
         @Override
-        public ArrayBasedBuilder add(KEY_TYPE element) {
+        public ArrayBasedBuilder KEY_GENERIC add(KEY_GENERIC_TYPE element) {
             ensureCapacity(size + 1);
             elements[size++] = element;
             return this;
         }
 
         @Override
-        public ArrayBasedBuilder add(KEY_TYPE... elements) {
+        public ArrayBasedBuilder KEY_GENERIC add(KEY_GENERIC_TYPE... elements) {
             ensureCapacity(size + elements.length);
             System.arraycopy(elements, 0, this.elements, size, elements.length);
             size += elements.length;
             return this;
         }
 
-        public ArrayBasedBuilder addAll(LIST elements) {
+        public ArrayBasedBuilder KEY_GENERIC addAll(LIST KEY_GENERIC elements) {
             int n = elements.size();
             ensureCapacity(size + n);
             for (int i = 0; i < n; ++i) {
@@ -85,18 +92,18 @@ final class IMMUTABLES {
             return this;
         }
 
-        public ArrayBasedBuilder addAll(COLLECTION elements) {
+        public ArrayBasedBuilder KEY_GENERIC addAll(COLLECTION KEY_GENERIC elements) {
              int n = elements.size();
              ensureCapacity(size + n);
              KEY_ITERATOR iterator = elements.iterator();
              while (iterator.hasNext()) {
-                 this.elements[size++] = iterator.NEXT_KEY();
+                 this.elements[size++] = KEY_GENERIC_CAST iterator.NEXT_KEY();
              }
              return this;
          }
 
         @Override
-        public ArrayBasedBuilder addAll(Iterable<KEY_GENERIC_CLASS> elements) {
+        public ArrayBasedBuilder KEY_GENERIC addAll(Iterable<KEY_GENERIC_CLASS> elements) {
             if (elements instanceof Collection) {
                 Collection<?> collection = (Collection<?>) elements;
                 ensureCapacity(size + collection.size());
@@ -105,7 +112,7 @@ final class IMMUTABLES {
             return this;
         }
 
-        ArrayBasedBuilder combine(ArrayBasedBuilder other) {
+        ArrayBasedBuilder KEY_GENERIC combine(ArrayBasedBuilder KEY_GENERIC other) {
             ensureCapacity(size + other.size);
             System.arraycopy(other.elements, 0, elements, size, other.size);
             size += other.size;
