@@ -19,6 +19,18 @@ package PACKAGE;
 
 import java.util.Collection;
 
+#ifdef JDK_PRIMITIVE_STREAM;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.JDK_PRIMITIVE_STREAM;
+import java.util.stream.StreamSupport;
+
+#if KEY_WIDENED
+import WIDENED_KEY_PACKAGE.WIDENED_KEY_ITERATORS;
+#endif
+
+#endif
+
 /** A type-specific {@link Collection}; provides some additional methods
  * that use polymorphism to avoid (un)boxing.
  *
@@ -192,4 +204,13 @@ public interface COLLECTION KEY_GENERIC extends Collection<KEY_GENERIC_CLASS>, K
 
 #endif
 
+#ifdef JDK_PRIMITIVE_STREAM
+	default JDK_PRIMITIVE_STREAM JDK_PRIMITIVE_STREAM_METHOD() {
+#if KEY_WIDENED
+		return StreamSupport.JDK_PRIMITIVE_STREAM_METHOD(Spliterators.spliterator(WIDENED_KEY_ITERATORS.wrap(iterator()), size(), Spliterator.NONNULL), false);
+#else
+		return StreamSupport.JDK_PRIMITIVE_STREAM_METHOD(Spliterators.spliterator(iterator(), size(), Spliterator.NONNULL), false);
+#endif
+	}
+#endif
 }

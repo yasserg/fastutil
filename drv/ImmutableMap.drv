@@ -16,7 +16,7 @@ package PACKAGE;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.HashCommon;
-import it.unimi.dsi.fastutil.objects.AbstractObjectSet;
+import it.unimi.dsi.fastutil.objects.ImmutableObjectSet;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectIterators;
 
@@ -136,7 +136,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
     /** Returns a new Builder. */
     public static KEY_VALUE_GENERIC Builder KEY_VALUE_GENERIC builder() {
-        return new Builder KEY_VALUE_GENERIC_DIAMOND ();
+        return new Builder KEY_VALUE_GENERIC_DIAMOND();
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
      * to throw an exception.
      */
     public static KEY_VALUE_GENERIC Builder KEY_VALUE_GENERIC builder(int initialCapacity) {
-        return new Builder KEY_VALUE_GENERIC_DIAMOND (initialCapacity);
+        return new Builder KEY_VALUE_GENERIC_DIAMOND(initialCapacity);
     }
 
     public static class Builder KEY_VALUE_GENERIC {
@@ -213,6 +213,14 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
             return this;
         }
 
+        Builder KEY_VALUE_GENERIC combine(Builder KEY_VALUE_GENERIC other) {
+            ensureCapacity(this.size + other.size);
+            System.arraycopy(other.keys, 0, this.keys, this.size, other.size);
+            System.arraycopy(other.values, 0, this.values, this.size, other.size);
+            this.size += other.size;
+            return this;
+        }
+
         public IMMUTABLE_MAP KEY_VALUE_GENERIC build() {
             IMMUTABLE_MAP KEY_VALUE_GENERIC result = construct(size, keys, values);
             // Since duplicates are not allowed, size of map must be same as this size.
@@ -242,12 +250,10 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         KEY_GENERIC_TYPE[] keyTable = KEY_GENERIC_ARRAY_CAST new KEY_TYPE[tableSize];
         VALUE_GENERIC_TYPE[] valueTable = VALUE_GENERIC_ARRAY_CAST new VALUE_TYPE[tableSize];
         int mask = tableSize - 1;
-        int hashCode = 0;
         boolean hasNull = false;
         VALUE_GENERIC_TYPE valueForNullKey = VALUE_NULL;
         for (int i = 0; i < n; i++) {
             KEY_GENERIC_TYPE key = keys[i];
-            hashCode += KEY2JAVAHASH(key) ^ VALUE2JAVAHASH(values[i]);
             if (KEY_IS_NULL(key)) {
                 if (hasNull) {
                     throw new IllegalArgumentException("Duplicate key for " + key);
@@ -272,7 +278,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
                 j++;
             }
         }
-        return new RegularImmutableMap KEY_VALUE_GENERIC_DIAMOND(keyTable, valueTable, hasNull, valueForNullKey, n, hashCode);
+        return new RegularImmutableMap KEY_VALUE_GENERIC_DIAMOND(keyTable, valueTable, hasNull, valueForNullKey, n);
     }
 
     /**
@@ -291,7 +297,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
     /** Implementation of this immutable map used for 0 or 2+ elements (not 1). */
     private static final class RegularImmutableMap KEY_VALUE_GENERIC extends IMMUTABLE_MAP KEY_VALUE_GENERIC {
-        private static final RegularImmutableMap KEY_VALUE_AS_OBJECT EMPTY = new RegularImmutableMap KEY_VALUE_GENERIC_DIAMOND(null, null, false, VALUE_NULL, 0, 0);
+        private static final RegularImmutableMap KEY_VALUE_AS_OBJECT EMPTY = new RegularImmutableMap KEY_VALUE_GENERIC_DIAMOND(null, null, false, VALUE_NULL, 0);
 
         /**
          * The array of keys.
@@ -313,15 +319,13 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         private final VALUE_GENERIC_TYPE valueForNullKey;
 
         private final int size;
-        private final int hashCode;
 
-        private RegularImmutableMap(KEY_GENERIC_TYPE[] key, VALUE_GENERIC_TYPE[] value, boolean containsNullKey, VALUE_GENERIC_TYPE valueForNullKey, int size, int hashCode) {
+        private RegularImmutableMap(KEY_GENERIC_TYPE[] key, VALUE_GENERIC_TYPE[] value, boolean containsNullKey, VALUE_GENERIC_TYPE valueForNullKey, int size) {
             this.key = key;
             this.value = value;
             this.containsNullKey = containsNullKey;
             this.valueForNullKey = valueForNullKey;
             this.size = size;
-            this.hashCode = hashCode;
             if (ASSERTS_VALUE) assert containsNullKey || valueForNullKey == VALUE_NULL;
             if (ASSERTS_VALUE) assert key == null || key.length == value.length;
         }
@@ -554,7 +558,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
             }
         }
 
-        private final class MapEntrySet extends AbstractObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
+        private final class MapEntrySet extends ImmutableObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
 
             @Override
             public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new EntryIterator(); }
@@ -669,49 +673,13 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
             return new MapEntrySet();
         }
 
-        /**
-         * An iterator on keys.
-         */
-        private final class KeyIterator extends MapIterator implements KEY_ITERATOR KEY_GENERIC {
-            public KeyIterator() { super(); }
-
-            @Override
-            public KEY_GENERIC_TYPE NEXT_KEY() {
-                int nextIndex = nextEntry();
-                return nextIndex == key.length ? KEY_NULL : key[nextIndex];
-            }
-        }
-
-        private final class KeySet extends ABSTRACT_SET KEY_GENERIC {
-
-            @Override
-            public KEY_ITERATOR KEY_GENERIC iterator() { return new KeyIterator(); }
-
-            /** {@inheritDoc} */
-            @Override
-#ifdef JDK_PRIMITIVE_KEY_CONSUMER
-            public void forEach(final JDK_PRIMITIVE_KEY_CONSUMER consumer) {
-#else
-            public void forEach(final KEY_CONSUMER KEY_SUPER_GENERIC consumer) {
-#endif
-                if (key == null) return;
-                if (containsNullKey) consumer.accept(KEY_NULL);
-                for(int pos = key.length; pos-- != 0;) {
-                    final KEY_GENERIC_TYPE k = key[pos];
-                    if (! KEY_IS_NULL(k)) consumer.accept(k);
-                }
-            }
-
-            @Override
-            public int size() { return size; }
-
-            @Override
-            public boolean contains(KEY_TYPE k) { return containsKey(k); }
-        }
-
         @Override
-        public SET KEY_GENERIC keySet() {
-            return new KeySet();
+        public IMMUTABLE_SET KEY_GENERIC keySet() {
+            if (key == null) {
+                return (IMMUTABLE_SET KEY_GENERIC) IMMUTABLE_SET.RegularImmutableSet.EMPTY;
+            }
+
+            return new IMMUTABLE_SET.RegularImmutableSet KEY_GENERIC_DIAMOND(key, containsNullKey, size);
         }
 
         /**
@@ -766,6 +734,17 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
         @Override
         public int hashCode() {
+            if (key == null) {
+                return 0;
+            }
+            int hashCode = containsNullKey ? VALUE2JAVAHASH(valueForNullKey) : 0;
+            for (int i = 0; i < key.length; i++) {
+                KEY_GENERIC_TYPE k = key[i];
+                if (KEY_IS_NULL(k)) {
+                    continue;
+                }
+                hashCode += KEY2JAVAHASH(k) ^ VALUE2JAVAHASH(value[i]);
+            }
             return hashCode;
         }
     }
@@ -808,7 +787,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         }
 #endif
 
-        private final class MapEntrySet extends AbstractObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
+        private final class MapEntrySet extends ImmutableObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
 
             @Override
             public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return ObjectIterators.singleton((MAP.Entry KEY_VALUE_GENERIC) entry); }
@@ -888,31 +867,9 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
             return new MapEntrySet();
         }
 
-        private final class KeySet extends ABSTRACT_SET KEY_GENERIC {
-
-            @Override
-            public KEY_ITERATOR KEY_GENERIC iterator() { return KEY_ITERATORS.singleton(key); }
-
-            /** {@inheritDoc} */
-            @Override
-#ifdef JDK_PRIMITIVE_KEY_CONSUMER
-            public void forEach(final JDK_PRIMITIVE_KEY_CONSUMER consumer) {
-#else
-            public void forEach(final KEY_CONSUMER KEY_SUPER_GENERIC consumer) {
-#endif
-                consumer.accept(key);
-            }
-
-            @Override
-            public int size() { return 1; }
-
-            @Override
-            public boolean contains(KEY_TYPE k) { return containsKey(k); }
-        }
-
         @Override
-        public SET KEY_GENERIC keySet() {
-            return new KeySet();
+        public IMMUTABLE_SET KEY_GENERIC keySet() {
+            return new IMMUTABLE_SET.SingletonImmutableSet KEY_GENERIC_DIAMOND(key);
         }
 
         @Override
@@ -986,5 +943,8 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
     public boolean isEmpty() {
         return size() == 0;
     }
+
+    @Override
+    public abstract IMMUTABLE_SET KEY_GENERIC keySet();
 }
 
