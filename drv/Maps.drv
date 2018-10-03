@@ -109,6 +109,10 @@ public final class MAPS {
 		@Override
 		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { return ObjectSets.EMPTY_SET; }
 
+		@SuppressWarnings("unchecked")
+		@Override
+		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ObjectSets.EMPTY_SET; }
+
 		SUPPRESS_WARNINGS_KEY_UNCHECKED
 		@Override
 		public SET KEY_GENERIC keySet() { return SETS.EMPTY_SET; }
@@ -188,13 +192,12 @@ public final class MAPS {
 		@Override
 		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { if (entries == null) entries = ObjectSets.singleton(new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND(key, value)); return entries; }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		@Override
+		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ENTRYSET(); }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ObjectSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return (ObjectSet)ENTRYSET(); }
@@ -218,7 +221,7 @@ public final class MAPS {
 
 			Map<?,?> m = (Map<?,?>)o;
 			if (m.size() != 1) return false;
-			return m.entrySet().iterator().next().equals(entrySet().iterator().next());
+			return m.entrySet().iterator().next().equals(ENTRYSET().iterator().next());
 		}
 
 		@Override
@@ -291,13 +294,12 @@ public final class MAPS {
 		@Override
 		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { synchronized(sync) { if (entries == null) entries = ObjectSets.synchronize(map.ENTRYSET(), sync); return entries; } }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		@Override
+		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { synchronized(sync) { return ObjectSets.synchronize(map.FAST_ENTRYSET(), sync); } }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public ObjectSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return (ObjectSet)ENTRYSET(); }
@@ -498,13 +500,12 @@ public final class MAPS {
 		@Override
 		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { if (entries == null) entries = ObjectSets.unmodifiable(map.ENTRYSET()); return entries; }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		@Override
+		public ObjectSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ObjectSets.unmodifiable(map.FAST_ENTRYSET()); }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public ObjectSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return (ObjectSet)ENTRYSET(); }

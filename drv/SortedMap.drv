@@ -159,7 +159,6 @@ public interface SORTED_MAP KEY_VALUE_GENERIC extends MAP KEY_VALUE_GENERIC, Sor
 		ObjectBidirectionalIterator<MAP.Entry KEY_VALUE_GENERIC> fastIterator(MAP.Entry KEY_VALUE_GENERIC from);
 	}
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
 	/** Returns a sorted-set view of the mappings contained in this map.
 	 *  <p>Note that this specification strengthens the one given in the
 	 *  corresponding type-specific unsorted map.
@@ -175,21 +174,6 @@ public interface SORTED_MAP KEY_VALUE_GENERIC extends MAP KEY_VALUE_GENERIC, Sor
 	default ObjectSortedSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() {
 		return (ObjectSortedSet)ENTRYSET();
 	}
-#else
-	/** Returns a sorted-set view of the mappings contained in this map.
-	 *  <p>Note that this specification strengthens the one given in the
-	 *  corresponding type-specific unsorted map.
-	 *
-	 * @return a sorted-set view of the mappings contained in this map.
-	 * @see Map#entrySet()
-	 */
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	default ObjectSortedSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() {
-		return (ObjectSortedSet)ENTRYSET();
-	}
-#endif
 
 	/** Returns a type-specific sorted-set view of the mappings contained in this map.
 	 * <p>Note that this specification strengthens the one given in the
@@ -201,6 +185,14 @@ public interface SORTED_MAP KEY_VALUE_GENERIC extends MAP KEY_VALUE_GENERIC, Sor
 
 	@Override
 	ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET();
+
+	/**
+	 * An entry set that doesn't create new entry objects for iterator. Note that calling
+	 * {@code stream()} on this set is not allowed and will throw an exception if the subclass cannot
+	 * create a stream without creating new entry objects for each entry.
+	 */
+	@Override
+	ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET();
 
 	/** Returns a type-specific sorted-set view of the keys contained in this map.
 	 *  <p>Note that this specification strengthens the one given in the

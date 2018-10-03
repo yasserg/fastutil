@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 #if VALUES_PRIMITIVE
 import VALUE_PACKAGE.VALUE_ITERATOR;
@@ -558,7 +559,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
             }
         }
 
-        private final class MapEntrySet extends ImmutableObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
+        private class MapEntrySet extends ImmutableObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
 
             @Override
             public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new EntryIterator(); }
@@ -671,6 +672,27 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         @Override
         public FastEntrySet KEY_VALUE_GENERIC ENTRYSET() {
             return new MapEntrySet();
+        }
+
+        private final class FastMapEntrySet extends MapEntrySet {
+
+            @Override
+            public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new FastEntryIterator(); }
+
+            @Override
+            public void forEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+                super.fastForEach(consumer);
+            }
+
+            @Override
+            public Stream<MAP.Entry KEY_VALUE_GENERIC> stream() {
+                throw new UnsupportedOperationException("Not supported for fast entry set.");
+            }
+        }
+
+        @Override
+        public FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
+            return new FastMapEntrySet();
         }
 
         @Override
@@ -868,6 +890,11 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         }
 
         @Override
+        public FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
+            return new MapEntrySet();
+        }
+
+        @Override
         public IMMUTABLE_SET KEY_GENERIC keySet() {
             return new IMMUTABLE_SET.SingletonImmutableSet KEY_GENERIC_DIAMOND(key);
         }
@@ -946,5 +973,8 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
     @Override
     public abstract IMMUTABLE_SET KEY_GENERIC keySet();
+
+    @Override
+    public abstract FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET();
 }
 
