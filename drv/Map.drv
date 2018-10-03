@@ -146,7 +146,18 @@ public interface MAP KEY_VALUE_GENERIC extends FUNCTION KEY_VALUE_GENERIC, Map<K
 	 */
 	ObjectSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET();
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+	/**
+	 * An entry set that doesn't create new entry objects for iterator. Note that calling
+	 * {@code stream()} on this set is not allowed and will throw an exception if the subclass cannot
+	 * create a stream without creating new entry objects for each entry.
+	 */
+	ObjectSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET();
+
+	@Deprecated
+	default ObjectSet<MAP.Entry KEY_VALUE_GENERIC> DEPRECATED_ENTRYSET() {
+		return ENTRYSET();
+	}
+
 	/** Returns a set view of the mappings contained in this map.
 	 *  <p>Note that this specification strengthens the one given in {@link Map#entrySet()}.
 	 *
@@ -160,20 +171,6 @@ public interface MAP KEY_VALUE_GENERIC extends FUNCTION KEY_VALUE_GENERIC, Map<K
 	default ObjectSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() {
 		return (ObjectSet)ENTRYSET();
 	}
-#else
-	/** Returns a set view of the mappings contained in this map.
-	 *  <p>Note that this specification strengthens the one given in {@link Map#entrySet()}.
-	 *
-	 * @return a set view of the mappings contained in this map.
-	 * @see Map#entrySet()
-	 */
-
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	default ObjectSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() {
-		return (ObjectSet)ENTRYSET();
-	}
-#endif
 
 #if KEYS_PRIMITIVE || VALUES_PRIMITIVE
 	/** {@inheritDoc}
