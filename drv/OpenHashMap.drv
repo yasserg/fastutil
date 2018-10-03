@@ -1852,7 +1852,7 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 #endif
 
 #ifdef Linked
-	private final class MapEntrySet extends AbstractObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> implements FastSortedEntrySet KEY_VALUE_GENERIC {
+	private class MapEntrySet extends AbstractObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> implements FastSortedEntrySet KEY_VALUE_GENERIC {
 
 		@Override
 		public ObjectBidirectionalIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new EntryIterator(); }
@@ -1882,7 +1882,7 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 		}
 
 #else
-	private final class MapEntrySet extends AbstractObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
+	private class MapEntrySet extends AbstractObjectSet<MAP.Entry KEY_VALUE_GENERIC> implements FastEntrySet KEY_VALUE_GENERIC {
 
 		@Override
 		public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new EntryIterator(); }
@@ -2095,7 +2095,6 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 #endif
 	}
 
-
 #ifdef Linked
 	@Override
 	public FastSortedEntrySet KEY_VALUE_GENERIC ENTRYSET() {
@@ -2106,6 +2105,43 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 		if (entries == null) entries = new MapEntrySet();
 #endif
 		return entries;
+	}
+
+	private final class FastMapEntrySet extends MapEntrySet {
+
+#ifdef Linked
+		@Override
+		public ObjectBidirectionalIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new FastEntryIterator(); }
+
+		@Override
+		public ObjectListIterator<MAP.Entry KEY_VALUE_GENERIC> iterator(final MAP.Entry KEY_VALUE_GENERIC from) {
+			return new FastEntryIterator(from.ENTRY_GET_KEY());
+		}
+#else
+
+		@Override
+		public ObjectIterator<MAP.Entry KEY_VALUE_GENERIC> iterator() { return new FastEntryIterator(); }
+#endif
+
+		@Override
+		public void forEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+			super.fastForEach(consumer);
+		}
+
+		@Override
+		public Stream<MAP.Entry KEY_VALUE_GENERIC> stream() {
+			throw new UnsupportedOperationException("Use " + ENTRYSET + "()");
+		}
+	}
+
+#ifdef Linked
+@Override
+	public FastSortedEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
+#else
+	@Override
+	public FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
+#endif
+		return new FastMapEntrySet();
 	}
 
 	/** An iterator on keys.

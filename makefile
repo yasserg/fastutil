@@ -64,6 +64,9 @@ explain:
 	@echo "will compile behavioral and speed tests into the classes.\n"
 	@echo "If you set the make variable ASSERTS (e.g., make sources ASSERTS=1),"
 	@echo "you will compile assertions into the classes.\n"
+	@echo "If you set the make variable FASTEST (e.g., make sources FASTEST=1),"
+	@echo "you will only compile classes where there is a clear performance "
+	@echo "benefit.\n"
 	@echo "If you set the make variable NO_SMALL_TYPES (e.g.,"
 	@echo "make sources NO_SMALL_TYPES=1), you will only generate classes "
 	@echo "involving ints, longs and doubles (and some byte utility)."
@@ -151,10 +154,12 @@ $(HASHES): drv/Hash.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(HASHES)
 
+ifneq ($(FASTEST),1)
 SORTED_SETS := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)SortedSet.c)
 $(SORTED_SETS): drv/SortedSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(SORTED_SETS)
+endif
 
 FUNCTIONS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)Function.c))
 $(FUNCTIONS): drv/Function.drv; ./gencsource.sh $< $@ >$@
@@ -166,10 +171,12 @@ $(MAPS): drv/Map.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(MAPS)
 
+ifneq ($(FASTEST),1)
 SORTED_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)SortedMap.c))
 $(SORTED_MAPS): drv/SortedMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(SORTED_MAPS)
+endif
 
 LISTS := $(foreach k,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)List.c)
 $(LISTS): drv/List.drv; ./gencsource.sh $< $@ >$@
@@ -256,10 +263,13 @@ $(ABSTRACT_SETS): drv/AbstractSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ABSTRACT_SETS)
 
+
+ifneq ($(FASTEST),1)
 ABSTRACT_SORTED_SETS := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Abstract$(k)SortedSet.c)
 $(ABSTRACT_SORTED_SETS): drv/AbstractSortedSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ABSTRACT_SORTED_SETS)
+endif
 
 ABSTRACT_FUNCTIONS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Abstract$(k)2$(v)Function.c))
 $(ABSTRACT_FUNCTIONS): drv/AbstractFunction.drv; ./gencsource.sh $< $@ >$@
@@ -271,10 +281,12 @@ $(ABSTRACT_MAPS): drv/AbstractMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ABSTRACT_MAPS)
 
+ifneq ($(FASTEST),1)
 ABSTRACT_SORTED_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Abstract$(k)2$(v)SortedMap.c))
 $(ABSTRACT_SORTED_MAPS): drv/AbstractSortedMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ABSTRACT_SORTED_MAPS)
+endif
 
 ABSTRACT_LISTS := $(foreach k,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Abstract$(k)List.c)
 $(ABSTRACT_LISTS): drv/AbstractList.drv; ./gencsource.sh $< $@ >$@
@@ -335,75 +347,95 @@ $(OPEN_HASH_BIG_SETS): drv/OpenHashBigSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(OPEN_HASH_BIG_SETS)
 
+ifneq ($(FASTEST),1)
 LINKED_OPEN_HASH_SETS := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)LinkedOpenHashSet.c)
 $(LINKED_OPEN_HASH_SETS): drv/LinkedOpenHashSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(LINKED_OPEN_HASH_SETS)
+endif
 
 OPEN_CUSTOM_HASH_SETS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)OpenCustomHashSet.c)
 $(OPEN_CUSTOM_HASH_SETS): drv/OpenCustomHashSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(OPEN_CUSTOM_HASH_SETS)
 
+ifneq ($(FASTEST),1)
 LINKED_OPEN_CUSTOM_HASH_SETS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)LinkedOpenCustomHashSet.c)
 $(LINKED_OPEN_CUSTOM_HASH_SETS): drv/LinkedOpenCustomHashSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(LINKED_OPEN_CUSTOM_HASH_SETS)
+endif
 
+ifneq ($(FASTEST),1)
 ARRAY_SETS := $(foreach k,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)ArraySet.c)
 $(ARRAY_SETS): drv/ArraySet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ARRAY_SETS)
+endif
 
+ifneq ($(FASTEST),1)
 AVL_TREE_SETS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)AVLTreeSet.c)
 $(AVL_TREE_SETS): drv/AVLTreeSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(AVL_TREE_SETS)
+endif
 
+ifneq ($(FASTEST),1)
 RB_TREE_SETS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)RBTreeSet.c)
 $(RB_TREE_SETS): drv/RBTreeSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(RB_TREE_SETS)
+endif
 
 OPEN_HASH_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)OpenHashMap.c))
 $(OPEN_HASH_MAPS): drv/OpenHashMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(OPEN_HASH_MAPS)
 
+ifneq ($(FASTEST),1)
 LINKED_OPEN_HASH_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)LinkedOpenHashMap.c))
 $(LINKED_OPEN_HASH_MAPS): drv/LinkedOpenHashMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(LINKED_OPEN_HASH_MAPS)
+endif
 
 OPEN_CUSTOM_HASH_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)OpenCustomHashMap.c))
 $(OPEN_CUSTOM_HASH_MAPS): drv/OpenCustomHashMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(OPEN_CUSTOM_HASH_MAPS)
 
+ifneq ($(FASTEST),1)
 LINKED_OPEN_CUSTOM_HASH_MAPS := $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/objects/Object2$(v)LinkedOpenCustomHashMap.c)
 $(LINKED_OPEN_CUSTOM_HASH_MAPS): drv/LinkedOpenCustomHashMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(LINKED_OPEN_CUSTOM_HASH_MAPS)
+endif
 
 #STRIPED_OPEN_HASH_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Striped$(k)2$(v)OpenHashMap.c))
 #$(STRIPED_OPEN_HASH_MAPS): drv/StripedOpenHashMap.drv; ./gencsource.sh $< $@ >$@
 
 #CSOURCES += $(STRIPED_OPEN_HASH_MAPS)
 
+ifneq ($(FASTEST),1)
 ARRAY_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)ArrayMap.c))
 $(ARRAY_MAPS): drv/ArrayMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ARRAY_MAPS)
+endif
 
+ifneq ($(FASTEST),1)
 AVL_TREE_MAPS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)AVLTreeMap.c))
 $(AVL_TREE_MAPS): drv/AVLTreeMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(AVL_TREE_MAPS)
+endif
 
+ifneq ($(FASTEST),1)
 RB_TREE_MAPS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)RBTreeMap.c))
 $(RB_TREE_MAPS): drv/RBTreeMap.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(RB_TREE_MAPS)
+endif
 
 ARRAY_LISTS := $(foreach k,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)ArrayList.c)
 $(ARRAY_LISTS): drv/ArrayList.drv; ./gencsource.sh $< $@ >$@
@@ -484,10 +516,12 @@ $(SETS_STATIC): drv/Sets.drv; ./gencsource.sh $< $@ >$@
 CSOURCES += $(SETS_STATIC)
 
 
+ifneq ($(FASTEST),1)
 SORTED_SETS_STATIC := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)SortedSets.c)
 $(SORTED_SETS_STATIC): drv/SortedSets.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(SORTED_SETS_STATIC)
+endif
 
 
 LISTS_STATIC := $(foreach k,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Lists.c)
@@ -550,10 +584,12 @@ $(MAPS_STATIC): drv/Maps.drv; ./gencsource.sh $< $@ >$@
 CSOURCES += $(MAPS_STATIC)
 
 
+ifneq ($(FASTEST),1)
 SORTED_MAPS_STATIC := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)SortedMaps.c))
 $(SORTED_MAPS_STATIC): drv/SortedMaps.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(SORTED_MAPS_STATIC)
+endif
 
 
 COMPARATORS_STATIC := $(foreach k,$(TYPE_NOBOOL_NOREF), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Comparators.c)
