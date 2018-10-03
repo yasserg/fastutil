@@ -1255,6 +1255,11 @@ public class RB_TREE_MAP KEY_VALUE_GENERIC extends ABSTRACT_SORTED_MAP KEY_VALUE
 		return entries;
 	}
 
+	@Override
+	public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() {
+		return ENTRYSET();
+	}
+
 	/** An iterator on the whole range of keys.
 	 *
 	 * <p>This class can iterate in both directions on the keys of a threaded tree. We
@@ -1500,6 +1505,11 @@ public class RB_TREE_MAP KEY_VALUE_GENERIC extends ABSTRACT_SORTED_MAP KEY_VALUE
 				};
 
 			return entries;
+		}
+
+		@Override
+		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() {
+			return ENTRYSET();
 		}
 
 		private class KeySet extends ABSTRACT_SORTED_MAP KEY_VALUE_GENERIC.KeySet {

@@ -88,13 +88,13 @@ public final class SORTED_MAPS {
 		@Override
 		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { return ObjectSortedSets.EMPTY_SET; }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		@SuppressWarnings("unchecked")
+		@Override
+		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ObjectSortedSets.EMPTY_SET; }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings("unchecked")
 		public ObjectSortedSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return ObjectSortedSets.EMPTY_SET; }
@@ -206,13 +206,13 @@ public final class SORTED_MAPS {
 		@Override
 		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { if (entries == null) entries = ObjectSortedSets.singleton(new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND(key, value), entryComparator(comparator)); return (ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC>)entries; }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		SUPPRESS_WARNINGS_KEY_UNCHECKED
+		@Override
+		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ENTRYSET(); }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ObjectSortedSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return (ObjectSortedSet)ENTRYSET(); }
@@ -350,13 +350,12 @@ public final class SORTED_MAPS {
 		@Override
 		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { if (entries == null) entries = ObjectSortedSets.synchronize(sortedMap.ENTRYSET(), sync); return (ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC>)entries; }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		@Override
+		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ObjectSortedSets.synchronize(sortedMap.FAST_ENTRYSET(), sync); }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ObjectSortedSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return (ObjectSortedSet)ENTRYSET(); }
@@ -454,13 +453,12 @@ public final class SORTED_MAPS {
 		@Override
 		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> ENTRYSET() { if (entries == null) entries = ObjectSortedSets.unmodifiable(sortedMap.ENTRYSET()); return (ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC>)entries; }
 
-#if KEYS_PRIMITIVE || VALUES_PRIMITIVE
+		@Override
+		public ObjectSortedSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET() { return ObjectSortedSets.unmodifiable(sortedMap.FAST_ENTRYSET()); }
+
 		/** {@inheritDoc}
 		 * @deprecated Please use the corresponding type-specific method instead. */
 		@Deprecated
-#else
-		/** {@inheritDoc} */
-#endif
 		@Override
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ObjectSortedSet<Map.Entry<KEY_GENERIC_CLASS, VALUE_GENERIC_CLASS>> entrySet() { return (ObjectSortedSet)ENTRYSET(); }

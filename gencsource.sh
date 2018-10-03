@@ -570,7 +570,9 @@ fi)\
 "/* Methods (keys/values) */\n"\
 \
 \
-"#define ENTRYSET ${TYPE_LC[$k]}2${TYPE_CAP[$v]}EntrySet\n"\
+"#define DEPRECATED_ENTRYSET ${TYPE_LC[$k]}2${TYPE_CAP[$v]}EntrySet\n"\
+"#define ENTRYSET slowEntrySet\n"\
+"#define FAST_ENTRYSET fastEntrySet\n"\
 \
 \
 "/* Methods that have special names depending on keys (but the special names depend on values) */\n"\
