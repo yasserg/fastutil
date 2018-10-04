@@ -154,12 +154,10 @@ $(HASHES): drv/Hash.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(HASHES)
 
-ifneq ($(FASTEST),1)
 SORTED_SETS := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)SortedSet.c)
 $(SORTED_SETS): drv/SortedSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(SORTED_SETS)
-endif
 
 FUNCTIONS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)Function.c))
 $(FUNCTIONS): drv/Function.drv; ./gencsource.sh $< $@ >$@
@@ -264,12 +262,10 @@ $(ABSTRACT_SETS): drv/AbstractSet.drv; ./gencsource.sh $< $@ >$@
 CSOURCES += $(ABSTRACT_SETS)
 
 
-ifneq ($(FASTEST),1)
 ABSTRACT_SORTED_SETS := $(foreach k,$(TYPE_NOBOOL), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Abstract$(k)SortedSet.c)
 $(ABSTRACT_SORTED_SETS): drv/AbstractSortedSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(ABSTRACT_SORTED_SETS)
-endif
 
 ABSTRACT_FUNCTIONS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/Abstract$(k)2$(v)Function.c))
 $(ABSTRACT_FUNCTIONS): drv/AbstractFunction.drv; ./gencsource.sh $< $@ >$@
@@ -380,12 +376,10 @@ $(AVL_TREE_SETS): drv/AVLTreeSet.drv; ./gencsource.sh $< $@ >$@
 CSOURCES += $(AVL_TREE_SETS)
 endif
 
-ifneq ($(FASTEST),1)
 RB_TREE_SETS := $(foreach k,$(TYPE_NOBOOL_NOREF), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)RBTreeSet.c)
 $(RB_TREE_SETS): drv/RBTreeSet.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(RB_TREE_SETS)
-endif
 
 OPEN_HASH_MAPS := $(foreach k,$(TYPE_NOBOOL), $(foreach v,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)2$(v)OpenHashMap.c))
 $(OPEN_HASH_MAPS): drv/OpenHashMap.drv; ./gencsource.sh $< $@ >$@
@@ -522,7 +516,6 @@ $(SORTED_SETS_STATIC): drv/SortedSets.drv; ./gencsource.sh $< $@ >$@
 
 CSOURCES += $(SORTED_SETS_STATIC)
 endif
-
 
 LISTS_STATIC := $(foreach k,$(TYPE), $(GEN_SRCDIR)/$(PKG_PATH)/$(PACKAGE_$(k))/$(k)Lists.c)
 $(LISTS_STATIC): drv/Lists.drv; ./gencsource.sh $< $@ >$@
