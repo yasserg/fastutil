@@ -153,6 +153,13 @@ public interface MAP KEY_VALUE_GENERIC extends FUNCTION KEY_VALUE_GENERIC, Map<K
 	 */
 	ObjectSet<MAP.Entry KEY_VALUE_GENERIC> FAST_ENTRYSET();
 
+	/**
+	 * Performs a forEach(..) on all entries in the map. Subclasses may use the same Entry object.
+	 */
+	default void fastForEach(Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+		FAST_ENTRYSET().forEach(consumer);
+	}
+
 	@Deprecated
 	default ObjectSet<MAP.Entry KEY_VALUE_GENERIC> DEPRECATED_ENTRYSET() {
 		return ENTRYSET();

@@ -2057,14 +2057,7 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 		/** {@inheritDoc} */
 		@Override
 		public void fastForEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
-			final ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND();
-			for(int i = size, curr, next = first; i-- != 0;) {
-				curr = next;
-				next = GET_NEXT(link[curr]);
-				entry.key = key[curr];
-				entry.value = value[curr];
-				consumer.accept(entry);
-			}
+			OPEN_HASH_MAP.this.fastForEach(consumer);
 		}
 
 #else
@@ -2080,18 +2073,7 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 		/** {@inheritDoc} */
 		@Override
 		public void fastForEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
-			final ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND();
-			if (containsNullKey) {
-				entry.key = key[n];
-				entry.value = value[n];
-				consumer.accept(entry);
-			}
-			for(int pos = n; pos-- != 0;)
-				if (! KEY_IS_NULL(key[pos])) {
-					entry.key = key[pos];
-					entry.value = value[pos];
-					consumer.accept(entry);
-				}
+			OPEN_HASH_MAP.this.fastForEach(consumer);
 		}
 
 #endif
@@ -2127,7 +2109,7 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 
 		@Override
 		public void forEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
-			super.fastForEach(consumer);
+			OPEN_HASH_MAP.this.fastForEach(consumer);
 		}
 
 		@Override
@@ -2149,6 +2131,32 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 	public FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
 #endif
 		return new FastMapEntrySet();
+	}
+
+	@Override
+	public void fastForEach(Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+		final ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND();
+#ifdef Linked
+		for(int i = size, curr, next = first; i-- != 0;) {
+			curr = next;
+			next = GET_NEXT(link[curr]);
+			entry.key = key[curr];
+			entry.value = value[curr];
+			consumer.accept(entry);
+		}
+#else
+		if (containsNullKey) {
+			entry.key = key[n];
+			entry.value = value[n];
+			consumer.accept(entry);
+		}
+		for(int pos = n; pos-- != 0;)
+			if (!KEY_IS_NULL(key[pos])) {
+			entry.key = key[pos];
+			entry.value = value[pos];
+			consumer.accept(entry);
+		}
+#endif
 	}
 
 	/** An iterator on keys.
