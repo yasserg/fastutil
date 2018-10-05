@@ -651,22 +651,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
             /** {@inheritDoc} */
             @Override
             public void fastForEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
-                if (key == null) {
-                    return;
-                }
-                final ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND();
-                if (containsNullKey) {
-                    entry.key = KEY_NULL;
-                    entry.value = valueForNullKey;
-                    consumer.accept(entry);
-                }
-                for (int pos = key.length; pos-- != 0;) {
-                    if (! KEY_IS_NULL(key[pos])) {
-                        entry.key = key[pos];
-                        entry.value = value[pos];
-                        consumer.accept(entry);
-                    }
-                }
+                RegularImmutableMap.this.fastForEach(consumer);
             }
         }
 
@@ -682,7 +667,7 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
             @Override
             public void forEach(final Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
-                super.fastForEach(consumer);
+                RegularImmutableMap.this.fastForEach(consumer);
             }
 
             @Override
@@ -699,6 +684,26 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         @Override
         public FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
             return new FastMapEntrySet();
+        }
+
+        @Override
+        public void fastForEach(Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+            if (key == null) {
+                return;
+            }
+            final ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC entry = new ABSTRACT_MAP.BasicEntry KEY_VALUE_GENERIC_DIAMOND();
+            if (containsNullKey) {
+                entry.key = KEY_NULL;
+                entry.value = valueForNullKey;
+                consumer.accept(entry);
+            }
+            for (int pos = key.length; pos-- != 0;) {
+                if (! KEY_IS_NULL(key[pos])) {
+                    entry.key = key[pos];
+                    entry.value = value[pos];
+                    consumer.accept(entry);
+                }
+            }
         }
 
         @Override
@@ -898,6 +903,11 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
         @Override
         public FastEntrySet KEY_VALUE_GENERIC FAST_ENTRYSET() {
             return new MapEntrySet();
+        }
+
+        @Override
+        public void fastForEach(Consumer<? super MAP.Entry KEY_VALUE_GENERIC> consumer) {
+            consumer.accept(entry);
         }
 
         @Override
