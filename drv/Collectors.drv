@@ -62,7 +62,7 @@ public final class COLLECTORS {
         return IMMUTABLE_LIST.copyOf(toList(stream));
     }
 #elif !KEYS_PRIMITIVE
-    public static KEY_GENERIC Collector<KEY_GENERIC_CLASS, ARRAY_LIST, LIST> toList() {
+    public static KEY_GENERIC Collector<KEY_GENERIC_CLASS, ARRAY_LIST, LIST KEY_GENERIC> toList() {
         return Collector.of(
                 ARRAY_LIST::new,
                 (l, e) -> l.add((KEY_TYPE) e),
@@ -113,7 +113,7 @@ public final class COLLECTORS {
         return IMMUTABLE_SET.copyOf(toList(stream));
     }
 #elif !KEYS_PRIMITIVE
-    public static KEY_GENERIC Collector<KEY_GENERIC_CLASS, OPEN_HASH_SET, SET> toSet() {
+    public static KEY_GENERIC Collector<KEY_GENERIC_CLASS, OPEN_HASH_SET, SET KEY_GENERIC> toSet() {
         return Collector.of(
                 OPEN_HASH_SET::new,
                 (s, e) -> s.add((KEY_TYPE) e),
@@ -124,7 +124,7 @@ public final class COLLECTORS {
                 s -> s);
     }
 
-    public static KEY_GENERIC Collector<KEY_GENERIC_CLASS, IMMUTABLE_SET.Builder, IMMUTABLE_SET> toImmutableSet() {
+    public static KEY_GENERIC Collector<KEY_GENERIC_CLASS, IMMUTABLE_SET.Builder, IMMUTABLE_SET KEY_GENERIC> toImmutableSet() {
         return Collector.of(
                 IMMUTABLE_SET::builder,
                 IMMUTABLE_SET.Builder::add,
