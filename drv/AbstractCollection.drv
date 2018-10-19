@@ -164,20 +164,17 @@ public abstract class ABSTRACT_COLLECTION KEY_GENERIC extends AbstractCollection
 
 	@Override
 	public boolean addAll(final Collection<? extends KEY_GENERIC_CLASS> c) {
+		boolean modified = false;
 		if (c instanceof COLLECTION){
-			return addAll((COLLECTION) c);
-		} else {
-			return super.addAll(c);
-		}
-	}
+			COLLECTION col = (COLLECTION) c;
 
-	@Override
-	public boolean containsAll(final Collection<?> c) {
-		if (c instanceof COLLECTION) {
-			return containsAll((COLLECTION) c);
+			for (final KEY_ITERATOR i = col.iterator(); i.hasNext();)
+				if (add(i.NEXT_KEY())) modified = true;
 		} else {
-			return super.containsAll(c);
+			for (KEY_GENERIC_CLASS e : c)
+				if (add(e)) modified = true;
 		}
+		return modified;
 	}
 
 	@Override

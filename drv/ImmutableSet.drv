@@ -298,6 +298,19 @@ public abstract class IMMUTABLE_SET KEY_GENERIC extends ABSTRACT_SET KEY_GENERIC
         }
 
         @Override
+        public boolean containsAll(final Collection<?> c) {
+            if (c instanceof COLLECTION) {
+                COLLECTION col = (COLLECTION) c;
+                for (final KEY_ITERATOR i = col.iterator(); i.hasNext();)
+                    if (!contains(i.NEXT_KEY())) return false;
+            } else {
+                for (Object e : c)
+                    if (!contains(e)) return false;
+            }
+            return true;
+        }
+
+        @Override
         public KEY_ITERATOR KEY_GENERIC iterator() {
             if (table == null) {
                 return ITERATORS.EMPTY_ITERATOR;
