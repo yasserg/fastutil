@@ -294,10 +294,9 @@ public abstract class ABSTRACT_LIST KEY_GENERIC extends ABSTRACT_COLLECTION KEY_
 	 */
 	@Override
 	public int hashCode() {
-		KEY_ITERATOR KEY_GENERIC i = iterator();
 		int h = 1, s = size();
-		while (s-- != 0) {
-			KEY_GENERIC_TYPE k = i.NEXT_KEY();
+		for (int i = 0; i < s; ++i) {
+			KEY_GENERIC_TYPE k = GET_KEY(i);
 			h = 31 * h + KEY2JAVAHASH(k);
 		}
 		return h;
@@ -315,8 +314,10 @@ public abstract class ABSTRACT_LIST KEY_GENERIC extends ABSTRACT_COLLECTION KEY_
 
 #if KEYS_PRIMITIVE
 		if (l instanceof LIST) {
-			final KEY_LIST_ITERATOR KEY_GENERIC i1 = listIterator(), i2 = ((LIST KEY_GENERIC)l).listIterator();
-			while(s-- != 0) if (i1.NEXT_KEY() != i2.NEXT_KEY()) return false;
+			LIST other = (LIST)l;
+			for (int i = s - 1; i >= 0; i--) {
+				if (GET_KEY(i) != other.GET_KEY(i)) return false;
+			}
 			return true;
 		}
 #endif
