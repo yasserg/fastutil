@@ -746,8 +746,8 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
                 /** {@inheritDoc} */
                 @Override
-#ifdef JDK_PRIMITIVE_VALUE_CONSUMER
-                public void forEach(final JDK_PRIMITIVE_VALUE_CONSUMER consumer) {
+#ifdef PRIMITIVE_VALUE_CONSUMER
+                public void forEach(final PRIMITIVE_VALUE_CONSUMER consumer) {
 #else
                 public void forEach(final VALUE_CONSUMER VALUE_SUPER_GENERIC consumer) {
 #endif
@@ -929,8 +929,8 @@ public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_G
 
                 /** {@inheritDoc} */
                 @Override
-#ifdef JDK_PRIMITIVE_VALUE_CONSUMER
-                public void forEach(final JDK_PRIMITIVE_VALUE_CONSUMER consumer) {
+#ifdef PRIMITIVE_VALUE_CONSUMER
+                public void forEach(final PRIMITIVE_VALUE_CONSUMER consumer) {
 #else
                 public void forEach(final VALUE_CONSUMER VALUE_SUPER_GENERIC consumer) {
 #endif

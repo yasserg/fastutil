@@ -129,7 +129,14 @@ $(if [[ "${CLASS[$k]}" != "" ]]; then\
 		echo "#define KEYS_PRIMITIVE 1\\n";\
 		echo "#define JDK_KEY_TO_GENERIC_FUNCTION java.util.function.${TYPE_CAP[$wk]}Function\\n";\
 		if [[ "${CLASS[$k]}" != "Boolean" ]]; then\
-			echo "#define JDK_PRIMITIVE_KEY_CONSUMER java.util.function.${TYPE_CAP[$wk]}Consumer\\n";\
+			if [[ "${CLASS[$k]}" == "Short" ]]; then\
+				echo "#define JDK_PRIMITIVE_KEY_CONSUMER java.util.function.${TYPE_CAP[$wk]}Consumer\\n";\
+				echo "#define PRIMITIVE_KEY_CONSUMER it.unimi.dsi.fastutil.shorts.ShortConsumer\\n";\
+				echo "#define PRIMITIVE_KEY_CONSUMER_NOT_WIDENED\\n";\
+			else\
+				echo "#define JDK_PRIMITIVE_KEY_CONSUMER java.util.function.${TYPE_CAP[$wk]}Consumer\\n";\
+				echo "#define PRIMITIVE_KEY_CONSUMER java.util.function.${TYPE_CAP[$wk]}Consumer\\n";\
+			fi;\
 			echo "#define JDK_PRIMITIVE_PREDICATE java.util.function.${TYPE_CAP[$wk]}Predicate\\n";\
 			echo "#define JDK_PRIMITIVE_ITERATOR PrimitiveIterator.Of${TYPE_CAP[$wk]}\\n";\
 			echo "#define JDK_PRIMITIVE_SPLITERATOR Spliterator.Of${TYPE_CAP[$wk]}\\n";\
@@ -149,7 +156,13 @@ $(if [[ "${CLASS[$v]}" != "" ]]; then\
 	if [[ "${CLASS[$v]}" != "Object" && "${CLASS[$v]}" != "Reference" ]]; then\
 		echo "#define VALUES_PRIMITIVE 1\\n";\
 		if [[ "${CLASS[$v]}" != "Boolean" ]]; then\
-			echo "#define JDK_PRIMITIVE_VALUE_CONSUMER java.util.function.${TYPE_CAP[$wv]}Consumer\\n";\
+			if [[ "${CLASS[$v]}" == "Short" ]]; then\
+				echo "#define JDK_PRIMITIVE_VALUE_CONSUMER java.util.function.${TYPE_CAP[$wv]}Consumer\\n";\
+				echo "#define PRIMITIVE_VALUE_CONSUMER it.unimi.dsi.fastutil.shorts.ShortConsumer\\n";\
+			else\
+				echo "#define JDK_PRIMITIVE_VALUE_CONSUMER java.util.function.${TYPE_CAP[$wv]}Consumer\\n";\
+				echo "#define PRIMITIVE_VALUE_CONSUMER java.util.function.${TYPE_CAP[$wv]}Consumer\\n";\
+			fi;\
 		fi\
 	else\
 		echo "#define VALUES_REFERENCE 1\\n";\

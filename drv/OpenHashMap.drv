@@ -2201,8 +2201,8 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 
 		/** {@inheritDoc} */
 		@Override
-#ifdef JDK_PRIMITIVE_KEY_CONSUMER
-		public void forEach(final JDK_PRIMITIVE_KEY_CONSUMER consumer) {
+#ifdef PRIMITIVE_KEY_CONSUMER
+		public void forEach(final PRIMITIVE_KEY_CONSUMER consumer) {
 #else
 		public void forEach(final KEY_CONSUMER KEY_SUPER_GENERIC consumer) {
 #endif
@@ -2304,8 +2304,8 @@ public class OPEN_HASH_MAP KEY_VALUE_GENERIC extends ABSTRACT_MAP KEY_VALUE_GENE
 
 				/** {@inheritDoc} */
 				@Override
-#ifdef JDK_PRIMITIVE_VALUE_CONSUMER
-				public void forEach(final JDK_PRIMITIVE_VALUE_CONSUMER consumer) {
+#ifdef PRIMITIVE_VALUE_CONSUMER
+				public void forEach(final PRIMITIVE_VALUE_CONSUMER consumer) {
 #else
 				public void forEach(final VALUE_CONSUMER VALUE_SUPER_GENERIC consumer) {
 #endif
