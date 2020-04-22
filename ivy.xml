@@ -3,5 +3,6 @@
     <dependencies>
       <dependency org="biz.aQute.bnd" name="bndlib" rev="2.4.0"/>
       <dependency org="biz.aQute.bnd" name="bnd" rev="2.4.0"/>
+      <dependency org="com.google.code.findbugs" name="jsr305" rev="3.0.2"/>
     </dependencies>
 </ivy-module>

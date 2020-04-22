@@ -45,6 +45,7 @@ import WIDENED_KEY_PACKAGE.WIDENED_KEY_ITERATORS;
  * methods are adapted from Guava implementation which is licensed under
  * Apache 2.0.
  */
+@javax.annotation.concurrent.Immutable
 public abstract class IMMUTABLE_SET KEY_GENERIC extends ABSTRACT_SET KEY_GENERIC {
 
     /** Returns the empty immutable set. */

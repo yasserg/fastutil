@@ -27,6 +27,7 @@
 	<property name="maven-staging-repository-id" value="sonatype-nexus-staging" />
 	<property name="maven-staging-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
 
+	<property name="classpath-jars" value="lib/jsr305-3.0.2.jar" />
 
 	<!-- OSGi manifest generation -->
 	<target name="resolve" description="run Ivy to fetch jars">
@@ -133,7 +134,8 @@
 			memoryMaximumSize="800M"
 			fork="yes"
 			source="1.8"
-			target="1.8">
+			target="1.8"
+			classpath="${classpath-jars}">
 			<compilerarg value="-Xlint:all"/>
 		</javac>
 	</target>
@@ -149,6 +151,7 @@
 			fork="yes"
 			source="1.8"
 			target="1.8"
+			classpath="${classpath-jars}"
 		/>
 	</target>
 
@@ -184,6 +187,7 @@
 			 windowtitle="fastutil ${version}"
 			 additionalparam="-breakiterator -Xmaxwarns 10000"
 			 maxmemory="800M"
+			 classpath="${classpath-jars}"
 		>
 	<link href="${j2se.apiurl}"/>
 		</javadoc>

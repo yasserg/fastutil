@@ -53,6 +53,7 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
  * methods are adapted from Guava implementation which is licensed under
  * Apache 2.0.
  */
+@javax.annotation.concurrent.Immutable
 public abstract class IMMUTABLE_MAP KEY_VALUE_GENERIC implements MAP KEY_VALUE_GENERIC {
 
     /**
